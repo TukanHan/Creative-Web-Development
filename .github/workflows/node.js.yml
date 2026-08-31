@@ -20,7 +20,7 @@ jobs:
         run: npm ci
 
       - name: Build App
-        run: npx ng build creative-web-development --configuration production --base-href /creative-web-development/
+        run: npx ng build creative-web-development --configuration production --base-href /Creative-Web-Development/
 
       - name: Fix index.html for GitHub Pages
         run: cp ./dist/creative-web-development/browser/index.csr.html ./dist/creative-web-development/browser/index.html
