@@ -23,8 +23,10 @@ jobs:
         run: npx ng build creative-web-development --configuration production --base-href /Creative-Web-Development/
 
       - name: Fix index.html for GitHub Pages
-        run: cp ./dist/creative-web-development/browser/index.csr.html ./dist/creative-web-development/browser/index.html
-
+        run: |
+          cp ./dist/creative-web-development/browser/index.csr.html ./dist/creative-web-development/browser/index.html
+          cp ./dist/creative-web-development/browser/index.csr.html ./dist/creative-web-development/browser/404.html
+        
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
