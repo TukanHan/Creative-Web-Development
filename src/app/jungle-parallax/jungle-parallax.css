@@ -1,0 +1,10 @@
+.content-section {
+  margin-top: -2px;
+  position: relative;
+  z-index: 100;
+  background: #020602;
+  color: #fff;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  font-family: sans-serif;
+}

@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { FirewatchParallax } from "./firewatch-parallax/firewatch-parallax";
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [FirewatchParallax],
+  imports: [RouterOutlet],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('creative-web-development');
+  protected readonly title = signal('Creative Web Development');
 }
