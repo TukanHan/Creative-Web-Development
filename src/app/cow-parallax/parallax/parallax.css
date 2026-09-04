@@ -1,0 +1,60 @@
+:host {
+    display: block;
+    position: relative;
+    min-height: 300px;
+    height: 70vh;
+    width: 100%;
+    overflow: hidden;
+
+    .parallax-layer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: bottom;
+        pointer-events: none;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+
+    .parallax-text {
+        position: absolute;
+        bottom: 15%;
+        left: 0;
+        right: 0;
+        text-align: center;
+
+        font-family: 'Montserrat', sans-serif;
+        font-size: clamp(25rem, 30vw, 35rem);
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #b74322;
+        opacity: 0.8;
+        mix-blend-mode: multiply;
+
+        -webkit-user-select: none;
+        user-select: none;
+        text-wrap: nowrap;
+    }
+
+    @media (max-width: 1280px) {
+        .parallax-text {
+            top: 30%;
+            bottom: 30%;
+            left: 50%;
+            font-size: clamp(6rem, 16vw, 35rem);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .parallax-text {
+            writing-mode: vertical-rl;
+            right: 10%;
+            top: 20%;
+            font-size: clamp(3rem, 12vh, 12rem);
+        }
+    }
+}

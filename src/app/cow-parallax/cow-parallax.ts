@@ -1,17 +1,12 @@
-import {
-  afterNextRender,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
+import { afterNextRender, Component, DestroyRef, inject } from '@angular/core';
+import { Parallax } from "./parallax/parallax";
 import { gsap } from 'gsap';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
-import { Parallax } from './parallax/parallax';
 
 gsap.registerPlugin(ScrollSmoother);
 
 @Component({
-  selector: 'app-jungle-parallax',
+  selector: 'app-cow-parallax',
   imports: [Parallax],
   template: `<div id="smooth-wrapper">
     <div id="smooth-content">
@@ -23,9 +18,9 @@ gsap.registerPlugin(ScrollSmoother);
       </div>
     </div>
   </div>`,
-  styleUrl: './jungle-parallax.css',
+  styleUrl: './cow-parallax.css',
 })
-export class JungleParallax {
+export class CowParallax {
   private smoother?: ScrollSmoother;
 
   private readonly destroyRef = inject(DestroyRef);

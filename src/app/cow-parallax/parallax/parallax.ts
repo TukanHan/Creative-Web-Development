@@ -11,21 +11,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ParallaxLayer {
-    src: string;
-    speed: number;
-}
-
 @Component({
     selector: 'app-parallax',
-    template: ` @for (layer of layers; track layer.src) {
-        <img
-            #layerEl
-            [src]="'jungle/' + layer.src"
-            [attr.data-speed]="layer.speed"
-            class="parallax-layer"
-        />
-    }`,
+    imports: [],
+    template: `
+        <img #layerEl src="cow/B.webp" [attr.data-speed]="0.8" class="parallax-layer" />
+        <span #layerEl [attr.data-speed]="0" class="parallax-text">K_RO</span>
+        <img #layerEl src="cow/F.webp" [attr.data-speed]="1" class="parallax-layer" />
+    `,
     styleUrl: './parallax.css',
 })
 export class Parallax {
@@ -35,14 +28,6 @@ export class Parallax {
     protected readonly layerElements = viewChildren<ElementRef<HTMLImageElement>>('layerEl');
 
     private readonly destroyRef = inject(DestroyRef);
-
-    protected readonly layers: ParallaxLayer[] = [
-        { src: 'L5.png', speed: 0.00 },
-        { src: 'L4.png', speed: 0.25 },
-        { src: 'L3.webp', speed: 0.5 },
-        { src: 'L2.webp', speed: 0.75 },
-        { src: 'L1.webp', speed: 1 },
-    ];
 
     constructor() {
         afterNextRender(() => {
