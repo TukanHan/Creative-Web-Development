@@ -37,11 +37,11 @@ export class Parallax {
     private readonly destroyRef = inject(DestroyRef);
 
     protected readonly layers: ParallaxLayer[] = [
-        { src: 'moon.jpg', speed: 0.02 },
-        { src: 'l4.png', speed: 0.26 },
-        { src: 'l3.png', speed: 0.49 },
-        { src: 'l2.png', speed: 0.6 },
-        { src: 'l1.png', speed: 1 },
+        { src: 'L5.png', speed: 0.00 },
+        { src: 'L4.png', speed: 0.25 },
+        { src: 'L3.webp', speed: 0.5 },
+        { src: 'L2.webp', speed: 0.75 },
+        { src: 'L1.webp', speed: 1 },
     ];
 
     constructor() {
