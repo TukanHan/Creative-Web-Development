@@ -13,5 +13,9 @@ export const routes: Routes = [
     {
         path: 'cow',
         loadComponent: () => import('./cow-parallax/cow-parallax').then(m => m.CowParallax)
+    },
+    {
+        path: 'ornament',
+        loadComponent: () => import('./ornament-page/ornament-page').then(m => m.OrnamentPage)
     }
 ];

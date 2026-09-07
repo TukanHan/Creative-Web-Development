@@ -1,0 +1,45 @@
+:host {
+    --ornament-color: #ffb924;
+    --ornament-stroke-width: 2px;
+    --ornament-scale: 0.4;
+
+    .divider-container {
+        display: flex;
+        color: var(--ornament-color);
+
+        &.flip {
+            transform: rotate(180deg);
+        }
+
+        svg {
+            display: block;
+            overflow: visible;
+            stroke-width: var(--ornament-stroke-width);
+            stroke: currentColor;
+            fill: none;
+            
+            path, line {
+                vector-effect: non-scaling-stroke;
+                stroke-linecap: square;
+            }
+        }
+
+        .line-svg {
+            flex-grow: 1;
+            flex-shrink: 1;
+            width: 0;
+            min-width: 0;
+            height: var(--ornament-stroke-width);
+        }
+
+        .rhombus-svg {
+            width: calc(30px * var(--ornament-scale));
+            height: calc(25px * var(--ornament-scale));
+        }
+
+        .ornament-svg {
+            width: calc(150px * var(--ornament-scale));
+            height: calc(50px * var(--ornament-scale));
+        }
+    }
+}
