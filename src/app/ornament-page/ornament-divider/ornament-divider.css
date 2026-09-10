@@ -1,14 +1,31 @@
 :host {
-    --ornament-color: #ffb924;
+    --ornament-color: var(--primary-color, #ffb924);
     --ornament-stroke-width: 2px;
-    --ornament-scale: 0.4;
+    position: relative;
 
     .divider-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+
         display: flex;
         color: var(--ornament-color);
+        align-items: center;
+
+        mask-image: url("data:image/svg+xml;utf8,\
+            <svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'>\
+                <filter id='grunge'>\
+                    <feTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='4' result='noise'/>\
+                    <feColorMatrix type='matrix' values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0' result='bw'/>\
+                </filter>\
+                <rect width='100%' height='100%' filter='url(%23grunge)'/>\
+            </svg>");
+        mask-repeat: repeat;
+        mask-size: 250px 250px;
 
         &.flip {
-            transform: rotate(180deg);
+            transform: translateY(-50%) rotate(180deg);
         }
 
         svg {
@@ -17,31 +34,34 @@
             stroke-width: var(--ornament-stroke-width);
             stroke: currentColor;
             fill: none;
-            
-            path, line {
+
+            path,
+            line {
                 vector-effect: non-scaling-stroke;
                 stroke-linecap: square;
+
+                filter: drop-shadow(0 0 3px rgba(255, 185, 36, 0.2))
+                    drop-shadow(0 0 8px rgba(255, 185, 36, 0.07));
             }
-        }
 
-        .line-svg {
-            flex: 1 1 0;
-            min-width: 0;
-            height: var(--ornament-stroke-width);
-        }
-
-        .rhombus-svg {
-            width: calc(30px * var(--ornament-scale));
-            height: calc(25px * var(--ornament-scale));
-
-            &.flip-x {
-                transform: scaleX(-1);
+            --ornament-scale: 0.4;
+            &.line-svg {
+                flex: 1 1 0;
+                min-width: 0;
+                height: var(--ornament-stroke-width);
             }
-        }
 
-        .ornament-svg {
-            width: calc(150px * var(--ornament-scale));
-            height: calc(50px * var(--ornament-scale));
+            &.rhombus-svg {
+                width: calc(35px * var(--ornament-scale));
+
+                &.flip-x {
+                    transform: scaleX(-1);
+                }
+            }
+
+            &.ornament-svg {
+                width: calc(150px * var(--ornament-scale));
+            }
         }
     }
 }
