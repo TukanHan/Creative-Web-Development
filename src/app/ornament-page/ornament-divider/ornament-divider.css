@@ -25,9 +25,7 @@
         }
 
         .line-svg {
-            flex-grow: 1;
-            flex-shrink: 1;
-            width: 0;
+            flex: 1 1 0;
             min-width: 0;
             height: var(--ornament-stroke-width);
         }
@@ -35,6 +33,10 @@
         .rhombus-svg {
             width: calc(30px * var(--ornament-scale));
             height: calc(25px * var(--ornament-scale));
+
+            &.flip-x {
+                transform: scaleX(-1);
+            }
         }
 
         .ornament-svg {
