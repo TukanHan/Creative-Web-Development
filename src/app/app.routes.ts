@@ -17,5 +17,9 @@ export const routes: Routes = [
     {
         path: 'ornament',
         loadComponent: () => import('./ornament-page/ornament-page').then(m => m.OrnamentPage)
+    },
+    {
+        path: 'noise',
+        loadComponent: () => import('./noise/host').then(m => m.Host)
     }
 ];

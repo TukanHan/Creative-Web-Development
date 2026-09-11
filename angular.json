@@ -24,7 +24,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
@@ -32,6 +34,11 @@
             },
             "ssr": {
               "entry": "src/server.ts"
+            },
+            "loader": {
+              ".glsl": "text",
+              ".vert": "text",
+              ".frag": "text"
             }
           },
           "configurations": {
