@@ -1,8 +1,7 @@
-import { Component, ElementRef, HostListener, viewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, input, viewChild } from '@angular/core';
 import { Renderer, Geometry, Program, Mesh } from 'ogl';
 
 import vertexShader from './shaders/shape.vert.glsl';
-import fragmentShader from './shaders/noise.frag.glsl';
 
 @Component({
     selector: 'app-noise',
@@ -12,11 +11,12 @@ import fragmentShader from './shaders/noise.frag.glsl';
             width: 100%;
             height: 100%;
             display: block;
-            background: #111;
         }
     `,
 })
 export class Noise {
+    public readonly fragmentShader = input.required<string>();
+
     protected readonly canvasRef = viewChild.required('canvas', { read: ElementRef });
 
     private renderer!: Renderer;
@@ -41,7 +41,7 @@ export class Noise {
 
         this.program = new Program(gl, {
             vertex: vertexShader,
-            fragment: fragmentShader,
+            fragment: this.fragmentShader(),
             uniforms: {
                 uTime: { value: 0 },
                 uResolution: { value: [canvas.clientWidth, canvas.clientHeight] },
