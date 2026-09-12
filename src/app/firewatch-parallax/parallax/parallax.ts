@@ -31,7 +31,7 @@ interface ParallaxLayer {
     styleUrl: './parallax.css',
 })
 export class Parallax {
-    private ctx!: gsap.Context;
+    private ctx?: gsap.Context;
 
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly layerElements = viewChildren<ElementRef<HTMLImageElement>>('layerEl');

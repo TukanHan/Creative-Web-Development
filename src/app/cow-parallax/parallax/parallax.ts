@@ -15,14 +15,26 @@ gsap.registerPlugin(ScrollTrigger);
     selector: 'app-parallax',
     imports: [],
     template: `
-        <img #layerEl src="cow/B.webp" [attr.data-speed]="0.8" class="parallax-layer" />
+        <img
+            #layerEl
+            src="cow/B.webp"
+            alt="Scenic landscape with a blue sky and clouds"
+            [attr.data-speed]="0.8"
+            class="parallax-layer"
+        />
         <span #layerEl [attr.data-speed]="0" class="parallax-text">K_RO</span>
-        <img #layerEl src="cow/F.webp" [attr.data-speed]="1" class="parallax-layer" />
+        <img
+            #layerEl
+            src="cow/F.webp"
+            alt="Colorful cow standing in a field"
+            [attr.data-speed]="1"
+            class="parallax-layer"
+        />
     `,
     styleUrl: './parallax.css',
 })
 export class Parallax {
-    private ctx!: gsap.Context;
+    private ctx?: gsap.Context;
 
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly layerElements = viewChildren<ElementRef<HTMLImageElement>>('layerEl');

@@ -1,4 +1,12 @@
-import { Component, ElementRef, HostListener, input, viewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    HostListener,
+    input,
+    OnDestroy,
+    OnInit,
+    viewChild,
+} from '@angular/core';
 import { Renderer, Geometry, Program, Mesh } from 'ogl';
 
 import vertexShader from './shaders/shape.vert.glsl';
@@ -14,10 +22,10 @@ import vertexShader from './shaders/shape.vert.glsl';
         }
     `,
 })
-export class Noise {
+export class Noise implements OnInit, OnDestroy {
     public readonly fragmentShader = input.required<string>();
 
-    protected readonly canvasRef = viewChild.required('canvas', { read: ElementRef });
+    protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
     private renderer!: Renderer;
     private program!: Program;
@@ -55,7 +63,7 @@ export class Noise {
         this.animate(0);
     }
 
-    private animate = (time: number): void => {
+    private readonly animate = (time: number): void => {
         this.program.uniforms['uTime'].value = time * 0.001;
         this.renderer.render({ scene: this.mesh });
         this.animationFrameId = requestAnimationFrame(this.animate);

@@ -21,7 +21,7 @@ export const routes: Routes = [
     },
     {
         path: 'shader',
-        redirectTo: 'shader/a',
+        redirectTo: 'shader/noise',
         pathMatch: 'full',
     },
     {

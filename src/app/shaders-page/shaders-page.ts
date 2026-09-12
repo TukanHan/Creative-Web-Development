@@ -8,24 +8,28 @@ import blackHoleShader from './shaders/black-hole.frag.glsl';
 const SHADERS_MAP: Record<string, string> = {
     noise: noiseShader,
     smoke: smokeShader,
-    'black-hole': blackHoleShader
+    'black-hole': blackHoleShader,
 };
 
 @Component({
     selector: 'app-shaders-page',
     imports: [Noise],
-    template: `<app-noise class="noise-container" [fragmentShader]="fragmentShader()" />
+    template: `
+        <app-noise class="noise-container" [fragmentShader]="fragmentShader()" />
         <h1 class="title-section">
             @switch (type()) {
                 @case ('smoke') {
                     Smoke
-                } @case ('black-hole') {
-                    Black<br>hole
-                } @default {
+                }
+                @case ('black-hole') {
+                    Black<br />hole
+                }
+                @default {
                     Noise
                 }
             }
-        </h1>`,
+        </h1>
+    `,
     styles: `
         :host {
             display: flex;
