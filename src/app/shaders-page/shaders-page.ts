@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { Noise } from './noise';
+import { ShaderPreview } from './shader-preview';
 
 import noiseShader from './shaders/noise.frag.glsl';
 import smokeShader from './shaders/smoke.frag.glsl';
@@ -13,9 +13,9 @@ const SHADERS_MAP: Record<string, string> = {
 
 @Component({
     selector: 'app-shaders-page',
-    imports: [Noise],
+    imports: [ShaderPreview],
     template: `
-        <app-noise class="noise-container" [fragmentShader]="fragmentShader()" />
+        <app-shader-preview class="noise-container" [fragmentShader]="fragmentShader()" />
         <h1 class="title-section">
             @switch (type()) {
                 @case ('smoke') {

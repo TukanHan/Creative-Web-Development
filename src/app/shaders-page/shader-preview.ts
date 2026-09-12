@@ -1,5 +1,6 @@
 import {
     Component,
+    effect,
     ElementRef,
     HostListener,
     input,
@@ -12,7 +13,7 @@ import { Renderer, Geometry, Program, Mesh } from 'ogl';
 import vertexShader from './shaders/shape.vert.glsl';
 
 @Component({
-    selector: 'app-noise',
+    selector: 'app-shader-preview',
     template: `<canvas #canvas></canvas>`,
     styles: `
         canvas {
@@ -22,7 +23,7 @@ import vertexShader from './shaders/shape.vert.glsl';
         }
     `,
 })
-export class Noise implements OnInit, OnDestroy {
+export class ShaderPreview implements OnInit, OnDestroy {
     public readonly fragmentShader = input.required<string>();
 
     protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
@@ -31,6 +32,10 @@ export class Noise implements OnInit, OnDestroy {
     private program!: Program;
     private mesh!: Mesh;
     private animationFrameId!: number;
+
+    private readonly updateShader = effect(() => {
+        this.program.setShaders({ vertex: vertexShader, fragment: this.fragmentShader() });
+    });
 
     public ngOnInit(): void {
         const canvas = this.canvasRef().nativeElement;
