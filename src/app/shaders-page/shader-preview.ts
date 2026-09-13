@@ -2,7 +2,6 @@ import {
     Component,
     effect,
     ElementRef,
-    HostListener,
     input,
     OnDestroy,
     OnInit,
@@ -26,6 +25,9 @@ import vertexShader from './shaders/shape.vert.glsl';
             display: block;
         }
     `,
+    host: {
+        '(window:resize)': 'resize()',
+    }
 })
 export class ShaderPreview implements OnInit, OnDestroy {
     public readonly fragmentShader = input.required<string>();
@@ -37,8 +39,11 @@ export class ShaderPreview implements OnInit, OnDestroy {
     private mesh!: Mesh;
     private animationFrameId!: number;
 
+    private timeOffset = 0;
+
     private readonly updateShader = effect(() => {
         this.program.setShaders({ vertex: vertexShader, fragment: this.fragmentShader() });
+        this.timeOffset = performance.now();
     });
 
     public ngOnInit(): void {
@@ -61,7 +66,7 @@ export class ShaderPreview implements OnInit, OnDestroy {
             fragment: this.fragmentShader(),
             uniforms: {
                 uTime: { value: 0 },
-                uResolution: { value: [canvas.clientWidth, canvas.clientHeight] },
+                uResolution: { value: [gl.canvas.clientWidth, gl.canvas.clientHeight] },
             },
             transparent: true,
         });
@@ -73,17 +78,20 @@ export class ShaderPreview implements OnInit, OnDestroy {
     }
 
     private readonly animate = (time: number): void => {
-        this.program.uniforms['uTime'].value = time * 0.001;
+        this.program.uniforms['uTime'].value = (time - this.timeOffset) * 0.001;
         this.renderer.render({ scene: this.mesh });
         this.animationFrameId = requestAnimationFrame(this.animate);
     };
 
-    @HostListener('window:resize')
     protected resize(): void {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        const canvas = this.canvasRef().nativeElement;
+        const width = canvas.clientWidth || window.innerWidth;
+        const height = canvas.clientHeight || window.innerHeight;
+        
         this.renderer.setSize(width, height);
-        this.program.uniforms['uResolution'].value = [width, height];
+        
+        const gl = this.renderer.gl;
+        this.program.uniforms['uResolution'].value = [gl.canvas.width, gl.canvas.height];
     }
 
     public ngOnDestroy(): void {

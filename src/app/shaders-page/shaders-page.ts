@@ -49,7 +49,7 @@ const SHADERS_MAP: Record<string, string> = {
             }
         }
         .noise-container {
-            position: absolute;
+            position: fixed;
             background: var(--shaders-page-background);
             z-index: -1;
         }
