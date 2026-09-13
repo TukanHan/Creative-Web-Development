@@ -40,18 +40,23 @@
         align-items: center;
         gap: 32px;
 
+        --header-selected-link-color: #ffffff;
+        --header-hover-link-color: #f1f5f9;
+        --header-default-link-color: #94a3b8;
+        --header-link-color: var(--header-default-link-color);
+
         .link {
-            color: #94a3b8;
+            color: var(--header-link-color);
             transition: all 0.2s ease-in-out;
             text-decoration: none;
 
             &:hover {
-                color: #f1f5f9;
+                --header-link-color: var(--header-hover-link-color);
                 text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
             }
 
             &.active-link {
-                color: #ffffff;
+                --header-link-color: var(--header-selected-link-color);
                 text-shadow:
                     0 0 8px #ffffff99,
                     0 0 20px #6366f166;

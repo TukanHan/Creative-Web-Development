@@ -16,9 +16,13 @@ import vertexShader from './shaders/shape.vert.glsl';
     selector: 'app-shader-preview',
     template: `<canvas #canvas></canvas>`,
     styles: `
-        canvas {
+        :host {
             width: 100%;
             height: 100%;
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
             display: block;
         }
     `,
