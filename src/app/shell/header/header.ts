@@ -9,7 +9,6 @@ import { LinkGroup } from './link-group/link-group';
         <nav class="links">
             <a class="link" routerLink="/cow" routerLinkActive="active-link">Parallaxa</a>
             <a class="link" routerLink="/ornament" routerLinkActive="active-link">Ornamenty</a>
-
             <app-link-group>
                 <a main-link class="link" routerLink="/shader" routerLinkActive="active-link">
                   Shadery
@@ -21,6 +20,7 @@ import { LinkGroup } from './link-group/link-group';
                   Black hole
                 </a>
             </app-link-group>
+            <a class="link" routerLink="/boids" routerLinkActive="active-link">Boidy</a>
         </nav>
     `,
     styleUrl: './header.css',

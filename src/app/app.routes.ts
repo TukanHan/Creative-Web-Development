@@ -19,6 +19,10 @@ export const routes: Routes = [
         path: 'ornament',
         loadComponent: () => import('./ornament-page/ornament-page').then((m) => m.OrnamentPage),
     },
+        {
+        path: 'boids',
+        loadComponent: () => import('./boids-page/boids-page').then((m) => m.BoidsPage),
+    },
     {
         path: 'shader',
         redirectTo: 'shader/noise',
