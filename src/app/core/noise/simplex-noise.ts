@@ -1,4 +1,3 @@
-// Szybka, czysta implementacja Simplex Noise 3D w TS
 const F3 = 1.0 / 3.0;
 const G3 = 1.0 / 6.0;
 
