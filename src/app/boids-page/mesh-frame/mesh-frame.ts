@@ -1,7 +1,7 @@
-import { Vec2 } from 'ogl';
 import { Clock } from './clock';
+import { MouseData } from './mouse-data';
 
 export interface MeshFrame {
     readonly clock: Clock;
-    readonly mousePosition?: Vec2;
+    readonly mouse?: MouseData;
 }

@@ -42,9 +42,9 @@ export class BoidsMesh implements MeshController {
     }
 
     private initBoids(): void {
-        for (let i = -50; i < 50; i++) {
-            for (let j = -20; j < 20; j++) {
-                const pos = new Vec2(i * 15, j * 15);
+        for (let i = -100; i < 100; i++) {
+            for (let j = -50; j < 50; j++) {
+                const pos = new Vec2(i * 20, j * 20);
                 this.boids.push(new Boid(pos));
             }
         }
@@ -68,7 +68,7 @@ export class BoidsMesh implements MeshController {
 
         for (let idx = 0; idx < this.boids.length; idx++) {
             const boid = this.boids[idx];
-            boid.update(frame.clock, frame.mousePosition);
+            boid.update(frame.clock, frame.mouse);
 
             const cameraPos = this.viewport.worldToNdc(boid.position);
             this.positions[idx * 2] = cameraPos.x;

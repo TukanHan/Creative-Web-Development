@@ -26,6 +26,10 @@ import { MeshFrame } from './mesh-frame/mesh-frame';
     host: {
         '(window:resize)': 'onResize()',
         '(window:pointermove)': 'onMouseMove($event)',
+        '(document:mouseout)': 'onMouseOut($event)',
+        '(window:blur)': 'onMouseLeave()',
+        '(window:pointerdown)': 'onPointerDown()',
+        '(window:pointerup)': 'onPointerUp()',
     },
 })
 export class BoidsPage implements AfterViewInit, OnDestroy {
@@ -35,7 +39,9 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
     private animationFrameId = 0;
     private readonly viewport = new Viewport2D();
     private readonly clock = new Clock();
+
     private mousePos?: Vec2;
+    private isMouseDown = false;
 
     private readonly vectorFieldMesh = new VectorFieldMesh(this.viewport);
     private readonly boidsMesh = new BoidsMesh(this.viewport);
@@ -65,10 +71,6 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         this.boidsMesh.resize();
     }
 
-    protected onMouseMove(event: PointerEvent): void {
-        this.mousePos = this.viewport.screenToWorld(new Vec2(event.clientX, event.clientY));
-    }
-
     private initOGL(): void {
         const canvas = this.canvasRef().nativeElement;
 
@@ -96,7 +98,12 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
         const frame: MeshFrame = {
             clock: this.clock,
-            mousePosition: this.mousePos,
+            mouse: this.mousePos
+                ? {
+                      position: this.mousePos,
+                      forceMultiplier: this.isMouseDown ? -1.0 : 1.0,
+                  }
+                : undefined,
         };
 
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);
@@ -108,5 +115,27 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
         }
+    }
+
+    protected onMouseMove(event: PointerEvent): void {
+        this.mousePos = this.viewport.screenToWorld(new Vec2(event.clientX, event.clientY));
+    }
+
+    protected onMouseOut(event: MouseEvent): void {
+        if (!event.relatedTarget || (event.relatedTarget as HTMLElement).nodeName === 'HTML') {
+            this.onMouseLeave();
+        }
+    }
+
+    protected onMouseLeave(): void {
+        this.mousePos = undefined;
+    }
+
+    protected onPointerDown(): void {
+        this.isMouseDown = true;
+    }
+
+    protected onPointerUp(): void {
+        this.isMouseDown = false;
     }
 }

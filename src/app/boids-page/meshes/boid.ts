@@ -1,35 +1,37 @@
 import { Vec2 } from 'ogl';
 import { getCurl2D } from '../../core/noise/curl-noise';
 import { Clock } from '../mesh-frame/clock';
+import { MouseData } from '../mesh-frame/mouse-data';
+
+const BOID_SPEED: number = 400;
+const BOID_RETURN_STRENGTH = 0.002;
+
+const MOUSE_REPELLING_STRENGTH = 6.0;
+const MOUSE_RADIUS = 150;
+const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 
 export class Boid {
     public position: Vec2;
     public velocity: Vec2 = new Vec2(0, 0);
 
-    private readonly speed = 400;
-    private readonly returnStrength = 0.002;
-
-    private readonly mouseRadius = 150;
-    private readonly mouseRepellingStrength = -6.0;
-
     constructor(private readonly originPosition: Vec2) {
         this.position = new Vec2(originPosition.x, originPosition.y);
     }
 
-    public update(clock: Clock, mousePos?: Vec2): void {
-        this.velocity = this.calcVelocity(clock, mousePos);
+    public update(clock: Clock, mouse?: MouseData): void {
+        this.velocity = this.calcVelocity(clock, mouse);
 
-        this.position.x += this.velocity.x * clock.deltaTime * this.speed;
-        this.position.y += this.velocity.y * clock.deltaTime * this.speed;
+        this.position.x += this.velocity.x * clock.deltaTime * BOID_SPEED;
+        this.position.y += this.velocity.y * clock.deltaTime * BOID_SPEED;
     }
 
-    private calcVelocity(clock: Clock, mousePos?: Vec2): Vec2 {
+    private calcVelocity(clock: Clock, mouse?: MouseData): Vec2 {
         const curl = getCurl2D(this.position.x, this.position.y, clock.time);
 
-        const anchorForceX = (this.originPosition.x - this.position.x) * this.returnStrength;
-        const anchorForceY = (this.originPosition.y - this.position.y) * this.returnStrength;
+        const anchorForceX = (this.originPosition.x - this.position.x) * BOID_RETURN_STRENGTH;
+        const anchorForceY = (this.originPosition.y - this.position.y) * BOID_RETURN_STRENGTH;
 
-        const mouseForce = this.calculateMouseForce(mousePos);
+        const mouseForce = this.calculateMouseForce(mouse);
 
         return new Vec2(
             curl.vx + anchorForceX + mouseForce.x,
@@ -37,19 +39,18 @@ export class Boid {
         );
     }
 
-    private calculateMouseForce(mousePos?: Vec2): Vec2 {
+    private calculateMouseForce(mouse?: MouseData): Vec2 {
         let mouseForceX = 0;
         let mouseForceY = 0;
 
-        if (mousePos) {
-            const dx = this.position.x - mousePos.x;
-            const dy = this.position.y - mousePos.y;
+        if (mouse) {
+            const dx = this.position.x - mouse.position.x;
+            const dy = this.position.y - mouse.position.y;
             const distSq = dx * dx + dy * dy;
-            const radiusSq = this.mouseRadius * this.mouseRadius;
 
-            if (distSq < radiusSq && distSq > 0) {
+            if (distSq < MOUSE_RADIUS_SQ && distSq > 0) {
                 const dist = Math.sqrt(distSq);
-                const force = (1 - dist / this.mouseRadius) * this.mouseRepellingStrength;
+                const force = (1 - dist / MOUSE_RADIUS) * MOUSE_REPELLING_STRENGTH * mouse.forceMultiplier;
 
                 mouseForceX = (dx / dist) * force;
                 mouseForceY = (dy / dist) * force;
