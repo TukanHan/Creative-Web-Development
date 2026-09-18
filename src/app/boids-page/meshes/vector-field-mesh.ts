@@ -4,9 +4,10 @@ import vertexShader from '../shaders/vector-field.vert.glsl';
 import fragmentShader from '../shaders/vector-field.frag.glsl';
 import { getCurl2D } from '../../core/noise/curl-noise';
 import { Viewport2D } from '../viewport-2d';
-import { Clock } from '../clock';
+import { MeshController } from './mesh-controler.interface';
+import { MeshFrame } from '../mesh-frame/mesh-frame';
 
-export class VectorFieldMesh {
+export class VectorFieldMesh implements MeshController {
     private mesh!: Mesh;
 
     private readonly GRID_SPACING = 15;
@@ -81,14 +82,14 @@ export class VectorFieldMesh {
         });
     }
 
-    public update(clock: Clock): Mesh {
+    public update(frame: MeshFrame): Mesh {
         let idx = 0;
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 const posX = this.positions[idx * 2];
                 const posY = this.positions[idx * 2 + 1];
 
-                const curl = getCurl2D(posX, posY, clock.time);
+                const curl = getCurl2D(posX, posY, frame.clock.time);
 
                 this.angles[idx] = Math.atan2(curl.vy, curl.vx);
                 this.lengths[idx] = Math.hypot(curl.vx, curl.vy);

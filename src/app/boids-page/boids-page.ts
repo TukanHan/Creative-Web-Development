@@ -1,9 +1,10 @@
 import { Component, ElementRef, viewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { Renderer } from 'ogl';
+import { Renderer, Vec2 } from 'ogl';
 import { VectorFieldMesh } from './meshes/vector-field-mesh';
 import { BoidsMesh } from './meshes/boids-mesh';
 import { Viewport2D } from './viewport-2d';
 import { Clock } from './clock';
+import { MeshFrame } from './mesh-frame/mesh-frame';
 
 @Component({
     selector: 'app-boids-page',
@@ -24,6 +25,7 @@ import { Clock } from './clock';
     `,
     host: {
         '(window:resize)': 'onResize()',
+        '(window:pointermove)': 'onMouseMove($event)',
     },
 })
 export class BoidsPage implements AfterViewInit, OnDestroy {
@@ -33,6 +35,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
     private animationFrameId = 0;
     private readonly viewport = new Viewport2D();
     private readonly clock = new Clock();
+    private readonly mousePos = new Vec2();
 
     private readonly vectorFieldMesh = new VectorFieldMesh(this.viewport);
     private readonly boidsMesh = new BoidsMesh(this.viewport);
@@ -62,6 +65,10 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         this.boidsMesh.resize();
     }
 
+    protected onMouseMove(event: PointerEvent): void {
+        this.mousePos.set(this.viewport.screenToWorld(new Vec2(event.clientX, event.clientY)));
+    }
+
     private initOGL(): void {
         const canvas = this.canvasRef().nativeElement;
 
@@ -87,9 +94,14 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
         this.clock.update();
 
+        const frame: MeshFrame = {
+            clock: this.clock,
+            mousePosition: this.mousePos
+        };
+
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);
-        this.renderer.render({ scene: this.boidsMesh.update(this.clock) });
-        this.renderer.render({ scene: this.vectorFieldMesh.update(this.clock), clear: false });
+        this.renderer.render({ scene: this.boidsMesh.update(frame) });
+        this.renderer.render({ scene: this.vectorFieldMesh.update(frame), clear: false });
     };
 
     public ngOnDestroy(): void {

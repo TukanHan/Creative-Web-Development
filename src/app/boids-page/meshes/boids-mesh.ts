@@ -4,10 +4,10 @@ import vertexShader from '../shaders/boids.vert.glsl';
 import fragmentShader from '../shaders/boids.frag.glsl';
 import { Boid } from './boid';
 import { Viewport2D } from '../viewport-2d';
-import { MeshX } from './mesh.interface';
-import { Clock } from '../clock';
+import { MeshController } from './mesh-controler.interface';
+import { MeshFrame } from '../mesh-frame/mesh-frame';
 
-export class BoidsMesh implements MeshX {
+export class BoidsMesh implements MeshController {
     private mesh!: Mesh;
     private program!: Program;
 
@@ -41,7 +41,7 @@ export class BoidsMesh implements MeshX {
     }
 
     private initBoids(): void {
-        for (let i = -20; i < 20; i++) {
+        for (let i = -50; i < 50; i++) {
             for (let j = -20; j < 20; j++) {
                 const pos = new Vec2(i * 15, j * 15);
                 this.boids.push(new Boid(pos));
@@ -62,12 +62,12 @@ export class BoidsMesh implements MeshX {
         });
     }
 
-    public update(clock: Clock): Mesh {
-        this.program.uniforms['uTime'].value = clock.time;
+    public update(frame: MeshFrame): Mesh {
+        this.program.uniforms['uTime'].value = frame.clock.time;
 
         for (let idx = 0; idx < this.boids.length; idx++) {
             const boid = this.boids[idx];
-            boid.update(clock);
+            boid.update(frame.clock, frame.mousePosition);
 
             const cameraPos = this.viewport.worldToNdc(boid.position);
             this.positions[idx * 2] = cameraPos.x;
