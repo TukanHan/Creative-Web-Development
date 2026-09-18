@@ -46,5 +46,5 @@ void main() {
         color = mix(c2, c3, (normSpeed - 0.7) / 0.3);
     }
 
-    gl_FragColor = vec4(color, 0.7);
+    gl_FragColor = vec4(color, 0.55);
 }

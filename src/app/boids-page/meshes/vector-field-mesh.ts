@@ -1,8 +1,10 @@
-import { Geometry, Mesh, OGLRenderingContext, Program } from 'ogl';
+import { Geometry, Mesh, OGLRenderingContext, Program, Vec2 } from 'ogl';
 
-import vertexShader from './shaders/vector-field.vert.glsl';
-import fragmentShader from './shaders/vector-field.frag.glsl';
-import { getCurl2D } from '../core/noise/curl-noise';
+import vertexShader from '../shaders/vector-field.vert.glsl';
+import fragmentShader from '../shaders/vector-field.frag.glsl';
+import { getCurl2D } from '../../core/noise/curl-noise';
+import { Viewport2D } from '../viewport-2d';
+import { Clock } from '../clock';
 
 export class VectorFieldMesh {
     private mesh!: Mesh;
@@ -15,6 +17,8 @@ export class VectorFieldMesh {
     private lengths!: Float32Array;
     private rows: number = 0;
     private cols: number = 0;
+
+    constructor(private readonly viewport: Viewport2D) {}
 
     public init(gl: OGLRenderingContext): void {
         const program = new Program(gl, {
@@ -36,33 +40,35 @@ export class VectorFieldMesh {
         });
     }
 
-    public resize(width: number, height: number): void {
-        this.resolution[0] = width;
-        this.resolution[1] = height;
+    public resize(): void {
+        this.resolution[0] = this.viewport.width;
+        this.resolution[1] = this.viewport.height;
 
-        this.cols = Math.floor(width / this.GRID_SPACING);
-        this.rows = Math.floor(height / this.GRID_SPACING);
+        this.cols = Math.floor(this.viewport.width / this.GRID_SPACING);
+        this.rows = Math.floor(this.viewport.height / this.GRID_SPACING);
 
         if (this.cols <= 0 || this.rows <= 0) {
             return;
         }
-
-        const startX = (width - (this.cols - 1) * this.GRID_SPACING) / 2;
-        const startY = (height - (this.rows - 1) * this.GRID_SPACING) / 2;
 
         const particleCount = this.cols * this.rows;
         this.positions = new Float32Array(particleCount * 2);
         this.angles = new Float32Array(particleCount);
         this.lengths = new Float32Array(particleCount);
 
+        const startX = (this.viewport.width - (this.cols - 1) * this.GRID_SPACING) / 2;
+        const startY = (this.viewport.height - (this.rows - 1) * this.GRID_SPACING) / 2;
+
         let idx = 0;
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
-                const posX = startX + c * this.GRID_SPACING;
-                const posY = startY + r * this.GRID_SPACING;
+                const pixelX = startX + c * this.GRID_SPACING;
+                const pixelY = startY + r * this.GRID_SPACING;
 
-                this.positions[idx * 2] = posX;
-                this.positions[idx * 2 + 1] = posY;
+                const worldPos = this.viewport.screenToWorld(new Vec2(pixelX, pixelY));
+
+                this.positions[idx * 2] = worldPos.x;
+                this.positions[idx * 2 + 1] = worldPos.y;
 
                 idx++;
             }
@@ -75,14 +81,14 @@ export class VectorFieldMesh {
         });
     }
 
-    public update(time: number): Mesh {
+    public update(clock: Clock): Mesh {
         let idx = 0;
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 const posX = this.positions[idx * 2];
                 const posY = this.positions[idx * 2 + 1];
 
-                const curl = getCurl2D(posX, posY, time);
+                const curl = getCurl2D(posX, posY, clock.time);
 
                 this.angles[idx] = Math.atan2(curl.vy, curl.vx);
                 this.lengths[idx] = Math.hypot(curl.vx, curl.vy);

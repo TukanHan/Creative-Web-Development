@@ -1,6 +1,9 @@
 import { Component, ElementRef, viewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Renderer } from 'ogl';
-import { VectorFieldMesh } from './vector-field-mesh';
+import { VectorFieldMesh } from './meshes/vector-field-mesh';
+import { BoidsMesh } from './meshes/boids-mesh';
+import { Viewport2D } from './viewport-2d';
+import { Clock } from './clock';
 
 @Component({
     selector: 'app-boids-page',
@@ -28,13 +31,16 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
     private renderer!: Renderer;
     private animationFrameId = 0;
+    private readonly viewport = new Viewport2D();
+    private readonly clock = new Clock();
 
-    private readonly vectorFieldMesh = new VectorFieldMesh();
+    private readonly vectorFieldMesh = new VectorFieldMesh(this.viewport);
+    private readonly boidsMesh = new BoidsMesh(this.viewport);
 
     public ngAfterViewInit(): void {
         this.initOGL();
         this.onResize();
-        this.animate(0);
+        this.animate();
     }
 
     protected onResize(): void {
@@ -44,16 +50,16 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
             return;
         }
 
-        const width = parent.clientWidth;
-        const height = parent.clientHeight;
+        this.viewport.resize(parent.clientWidth, parent.clientHeight);
 
-        if (width === 0 || height === 0) {
+        if (this.viewport.width === 0 || this.viewport.height === 0) {
             return;
         }
 
-        this.renderer.setSize(width, height);
+        this.renderer.setSize(this.viewport.width, this.viewport.height);
 
-        this.vectorFieldMesh.resize(width, height);
+        this.vectorFieldMesh.resize();
+        this.boidsMesh.resize();
     }
 
     private initOGL(): void {
@@ -73,15 +79,17 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
         this.vectorFieldMesh.init(gl);
+        this.boidsMesh.init(gl);
     }
 
-    private readonly animate = (time: number): void => {
+    private readonly animate = (): void => {
         this.animationFrameId = requestAnimationFrame(this.animate);
 
-        const t = time * 0.0001;
+        this.clock.update();
 
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);
-        this.renderer.render({ scene: this.vectorFieldMesh.update(t) });
+        this.renderer.render({ scene: this.boidsMesh.update(this.clock) });
+        this.renderer.render({ scene: this.vectorFieldMesh.update(this.clock), clear: false });
     };
 
     public ngOnDestroy(): void {
