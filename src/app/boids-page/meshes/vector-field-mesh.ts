@@ -3,7 +3,7 @@ import { Geometry, Mesh, OGLRenderingContext, Program, Vec2 } from 'ogl';
 import vertexShader from '../shaders/vector-field.vert.glsl';
 import fragmentShader from '../shaders/vector-field.frag.glsl';
 import { getCurl2D } from '../../core/noise/curl-noise';
-import { Viewport2D } from '../viewport-2d';
+import { Viewport2D } from '../mesh-frame/viewport-2d';
 import { MeshController } from './mesh-controler.interface';
 import { MeshFrame } from '../mesh-frame/mesh-frame';
 

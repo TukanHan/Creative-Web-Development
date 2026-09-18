@@ -1,6 +1,6 @@
 import { Vec2 } from 'ogl';
 import { getCurl2D } from '../../core/noise/curl-noise';
-import { Clock } from '../clock';
+import { Clock } from '../mesh-frame/clock';
 
 export class Boid {
     public position: Vec2;
@@ -10,7 +10,7 @@ export class Boid {
     private readonly returnStrength = 0.002;
 
     private readonly mouseRadius = 150;
-    private readonly mouseRepellingStrength = 6.0;
+    private readonly mouseRepellingStrength = -6.0;
 
     constructor(private readonly originPosition: Vec2) {
         this.position = new Vec2(originPosition.x, originPosition.y);

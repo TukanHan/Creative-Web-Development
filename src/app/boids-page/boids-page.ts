@@ -2,8 +2,8 @@ import { Component, ElementRef, viewChild, AfterViewInit, OnDestroy } from '@ang
 import { Renderer, Vec2 } from 'ogl';
 import { VectorFieldMesh } from './meshes/vector-field-mesh';
 import { BoidsMesh } from './meshes/boids-mesh';
-import { Viewport2D } from './viewport-2d';
-import { Clock } from './clock';
+import { Viewport2D } from './mesh-frame/viewport-2d';
+import { Clock } from './mesh-frame/clock';
 import { MeshFrame } from './mesh-frame/mesh-frame';
 
 @Component({
@@ -35,7 +35,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
     private animationFrameId = 0;
     private readonly viewport = new Viewport2D();
     private readonly clock = new Clock();
-    private readonly mousePos = new Vec2();
+    private mousePos?: Vec2;
 
     private readonly vectorFieldMesh = new VectorFieldMesh(this.viewport);
     private readonly boidsMesh = new BoidsMesh(this.viewport);
@@ -66,7 +66,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
     }
 
     protected onMouseMove(event: PointerEvent): void {
-        this.mousePos.set(this.viewport.screenToWorld(new Vec2(event.clientX, event.clientY)));
+        this.mousePos = this.viewport.screenToWorld(new Vec2(event.clientX, event.clientY));
     }
 
     private initOGL(): void {
@@ -96,7 +96,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
         const frame: MeshFrame = {
             clock: this.clock,
-            mousePosition: this.mousePos
+            mousePosition: this.mousePos,
         };
 
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);

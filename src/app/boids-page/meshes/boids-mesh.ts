@@ -3,7 +3,7 @@ import { Geometry, Mesh, OGLRenderingContext, Program, Vec2 } from 'ogl';
 import vertexShader from '../shaders/boids.vert.glsl';
 import fragmentShader from '../shaders/boids.frag.glsl';
 import { Boid } from './boid';
-import { Viewport2D } from '../viewport-2d';
+import { Viewport2D } from '../mesh-frame/viewport-2d';
 import { MeshController } from './mesh-controler.interface';
 import { MeshFrame } from '../mesh-frame/mesh-frame';
 
@@ -11,7 +11,8 @@ export class BoidsMesh implements MeshController {
     private mesh!: Mesh;
     private program!: Program;
 
-    private resolution = new Float32Array([1, 1]);
+    private readonly timeUniform = { value: 0 };
+    private readonly resolutionUniform = { value: new Float32Array([1, 1]) };
 
     private positions!: Float32Array;
     private velocities!: Float32Array;
@@ -25,8 +26,8 @@ export class BoidsMesh implements MeshController {
             vertex: vertexShader,
             fragment: fragmentShader,
             uniforms: {
-                uResolution: { value: this.resolution },
-                uTime: { value: 0 },
+                uResolution: this.resolutionUniform,
+                uTime: this.timeUniform,
             },
             transparent: true,
         });
@@ -53,8 +54,8 @@ export class BoidsMesh implements MeshController {
     }
 
     public resize(): void {
-        this.resolution[0] = this.viewport.width;
-        this.resolution[1] = this.viewport.height;
+        this.resolutionUniform.value[0] = this.viewport.width;
+        this.resolutionUniform.value[1] = this.viewport.height;
 
         this.mesh.geometry = new Geometry(this.mesh.gl, {
             aPosition: { size: 2, data: this.positions },
@@ -63,7 +64,7 @@ export class BoidsMesh implements MeshController {
     }
 
     public update(frame: MeshFrame): Mesh {
-        this.program.uniforms['uTime'].value = frame.clock.time;
+        this.timeUniform.value = frame.clock.time;
 
         for (let idx = 0; idx < this.boids.length; idx++) {
             const boid = this.boids[idx];

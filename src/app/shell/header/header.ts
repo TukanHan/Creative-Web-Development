@@ -11,13 +11,13 @@ import { LinkGroup } from './link-group/link-group';
             <a class="link" routerLink="/ornament" routerLinkActive="active-link">Ornamenty</a>
             <app-link-group>
                 <a main-link class="link" routerLink="/shader" routerLinkActive="active-link">
-                  Shadery
+                    Shadery
                 </a>
 
                 <a sub-link routerLink="/shader/noise" routerLinkActive="active-sublink">Noise</a>
                 <a sub-link routerLink="/shader/smoke" routerLinkActive="active-sublink">Smoke</a>
                 <a sub-link routerLink="/shader/black-hole" routerLinkActive="active-sublink">
-                  Black hole
+                    Black hole
                 </a>
             </app-link-group>
             <a class="link" routerLink="/boids" routerLinkActive="active-link">Boidy</a>
