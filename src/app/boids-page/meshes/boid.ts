@@ -6,8 +6,8 @@ import { MouseData } from '../mesh-frame/mouse-data';
 const BOID_SPEED: number = 400;
 const BOID_RETURN_STRENGTH = 0.002;
 
-const MOUSE_REPELLING_STRENGTH = 6.0;
-const MOUSE_RADIUS = 150;
+const MOUSE_REPELLING_STRENGTH = 10.0;
+const MOUSE_RADIUS = 200;
 const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 
 export class Boid {

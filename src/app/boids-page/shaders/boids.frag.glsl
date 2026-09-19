@@ -2,10 +2,14 @@ precision highp float;
 
 varying float vAngle;
 varying float vSpeed;
+varying float vID;
 
 uniform float uTime;
 
-// Funkcja obrotu wokół środka Punktu
+float hash(float n) {
+    return fract(sin(n * 12.9898) * 43758.5453123);
+}
+
 vec2 rotate(vec2 uv, float angle) {
     float s = sin(angle);
     float c = cos(angle);
@@ -13,38 +17,39 @@ vec2 rotate(vec2 uv, float angle) {
 }
 
 void main() {
-    // Przejście na układ lokalny [-0.5, 0.5] z punktu zakotwiczenia w środku
     vec2 uv = gl_PointCoord - vec2(0.5);
-    
-    // Obrót płomyczka w stronę wektora prędkości (z korektą przesunięcia fazy o 90 deg jeśli rysujemy pionowo)
     uv = rotate(uv, vAngle);
 
-    // 1. GEOMETRIA PŁOMIENIA / OGNIKA
-    // Skalujemy Y w zależności od X, aby stworzyć opływowy kształt łezki (szerszy z przodu, ostry na ogonie)
-    // Front płomienia jest na +X, ogon na -X
-    float distToCenter = length(uv);
+    // 1. KERNEL / KSZTAŁT OGNIKA
+    float flameShape = smoothstep(0.45, 0.05, length(vec2(uv.x * 0.85, uv.y * (1.1 + uv.x * 1.3))));
+
+    // 2. UNIKALNY SEED DLA KAŻDEJ CZĄSTECZKI (Brak wpływu pozycji!)
+    float uniqueSeed = hash(vID); 
+
+    // --- BARWA (Nie połączona z pozycją na ekranie) ---
+    float colorPulse = sin(uTime * 4.0 + uniqueSeed * 6.2831) * 0.5 + 0.5;
+
+    vec3 cCoreA = vec3(1.2, 1.2, 1.3);
+    vec3 cMidA  = vec3(0.1, 0.45, 0.95);
+
+    vec3 cCoreB = vec3(1.0, 1.3, 1.4);
+    vec3 cMidB  = vec3(0.2, 0.65, 1.0);
+
+    vec3 cCore  = mix(cCoreA, cCoreB, colorPulse);
+    vec3 cMid   = mix(cMidA, cMidB, colorPulse);
+    vec3 cOuter = vec3(0.0, 0.0, 0.0);
+
+    float r = length(uv - vec2(0.05, 0.0)) * 2.2; 
+    vec3 color = mix(cCore, cMid, smoothstep(0.0, 0.3, r));
+    color = mix(color, cOuter, smoothstep(0.3, 0.8, r));
+
+    // --- JASNOŚĆ ZALEŻNA OD PRĘDKOŚCI ---
+    float dimming = sin(uTime * 6.0 + uniqueSeed * 12.34) * 0.1 + 0.9;
     
-    // Zbieżność do tyłu (zwężanie ogonka)
-    float flameShape = smoothstep(0.45, 0.0, length(vec2(uv.x * 0.8, uv.y * (1.2 + uv.x * 1.5))));
+    // Zwiększ/zmniejsz mnożnik (np. 0.1), w zależności jak wysokie masz vSpeed w aplikacji:
+    float speedBrightness = 0.7 + clamp(vSpeed * 0.1, 0.0, 1.0);
 
-    if (flameShape < 0.05) discard;
+    float intensity = flameShape * dimming * speedBrightness;
 
-    // 2. ANIKACJA MIGOTANIA / PULSOWANIA OGNIA
-    float flicker = sin(uTime * 15.0 + uv.x * 10.0) * 0.1 + 0.9;
-
-    // 3. PALETA BARW OGNIKA (Core -> Inner Flame -> Outer Glow)
-    vec3 cCore  = vec3(1.0, 1.0, 0.9); // Gorące biało-żółte jądro
-    vec3 cMid   = vec3(0.5, 0.75, 1.0); // Ognisty pomarańcz
-    vec3 cOuter = vec3(0.0, 0.0, 1.0); // Ciemna czerwień na brzegach
-
-    // Gradient od środka do krawędzi
-    float r = length(uv - vec2(0.1, 0.0)) * 2.5; // Przesunięcie jądra lekko w stronę przodu
-    
-    vec3 color = mix(cCore, cMid, smoothstep(0.0, 0.4, r));
-    color = mix(color, cOuter, smoothstep(0.4, 0.9, r));
-
-    // Przezroczystość na brzegach dla miękkiego glow
-    float alpha = flameShape * flicker;
-
-    gl_FragColor = vec4(color, alpha);
+    gl_FragColor = vec4(color * intensity, intensity);
 }

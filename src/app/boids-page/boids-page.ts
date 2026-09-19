@@ -14,7 +14,7 @@ import { MeshFrame } from './mesh-frame/mesh-frame';
             display: flex;
             height: 100vh;
             width: 100vw;
-            background: radial-gradient(circle, #101014 0%, #121212 100%);
+            background: radial-gradient(circle, #0a0a11, #0b0c11);
             overflow: hidden;
         }
         canvas {
@@ -83,16 +83,15 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
         const gl = this.renderer.gl;
 
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-        gl.clearColor(0.0, 0.0, 0.0, 0.0);
-
         this.vectorFieldMesh.init(gl);
         this.boidsMesh.init(gl);
     }
 
     private readonly animate = (): void => {
         this.animationFrameId = requestAnimationFrame(this.animate);
+
+        this.renderer.gl.enable(this.renderer.gl.BLEND);
+        this.renderer.gl.blendFunc(this.renderer.gl.ALPHA, this.renderer.gl.ONE);
 
         this.clock.update();
 
@@ -108,7 +107,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
 
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);
         this.renderer.render({ scene: this.boidsMesh.update(frame) });
-        this.renderer.render({ scene: this.vectorFieldMesh.update(frame), clear: false });
+        //this.renderer.render({ scene: this.vectorFieldMesh.update(frame), clear: false });
     };
 
     public ngOnDestroy(): void {

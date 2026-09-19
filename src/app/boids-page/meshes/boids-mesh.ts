@@ -16,6 +16,7 @@ export class BoidsMesh implements MeshController {
 
     private positions!: Float32Array;
     private velocities!: Float32Array;
+    private ids!: Float32Array;
 
     private readonly boids: Boid[] = [];
 
@@ -30,6 +31,7 @@ export class BoidsMesh implements MeshController {
                 uTime: this.timeUniform,
             },
             transparent: true,
+            depthTest: false,
         });
 
         this.mesh = new Mesh(gl, {
@@ -51,6 +53,11 @@ export class BoidsMesh implements MeshController {
 
         this.positions = new Float32Array(this.boids.length * 2);
         this.velocities = new Float32Array(this.boids.length * 2);
+        this.ids = new Float32Array(this.boids.length);
+
+        for(let i = 0; i< this.boids.length; ++i) {
+            this.ids[i] = i;
+        }
     }
 
     public resize(): void {
@@ -60,6 +67,7 @@ export class BoidsMesh implements MeshController {
         this.mesh.geometry = new Geometry(this.mesh.gl, {
             aPosition: { size: 2, data: this.positions },
             aVelocity: { size: 2, data: this.velocities },
+            aID: { size: 1, data: this.ids },
         });
     }
 
