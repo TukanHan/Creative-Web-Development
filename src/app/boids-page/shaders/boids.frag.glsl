@@ -32,7 +32,7 @@ void main() {
     vec3 cCoreA = vec3(1.2, 1.2, 1.3);
     vec3 cMidA  = vec3(0.1, 0.45, 0.95);
 
-    vec3 cCoreB = vec3(1.0, 1.3, 1.4);
+    vec3 cCoreB = vec3(0.8, 0.8, 1.4);
     vec3 cMidB  = vec3(0.2, 0.65, 1.0);
 
     vec3 cCore  = mix(cCoreA, cCoreB, colorPulse);

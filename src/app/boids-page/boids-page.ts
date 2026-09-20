@@ -5,6 +5,7 @@ import { BoidsMesh } from './meshes/boids-mesh';
 import { Viewport2D } from './mesh-frame/viewport-2d';
 import { Clock } from './mesh-frame/clock';
 import { MeshFrame } from './mesh-frame/mesh-frame';
+import { Size } from './mesh-frame/size';
 
 @Component({
     selector: 'app-boids-page',
@@ -52,25 +53,6 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         this.animate();
     }
 
-    protected onResize(): void {
-        const canvas = this.canvasRef().nativeElement;
-        const parent = canvas.parentElement;
-        if (!parent) {
-            return;
-        }
-
-        this.viewport.resize(parent.clientWidth, parent.clientHeight);
-
-        if (this.viewport.width === 0 || this.viewport.height === 0) {
-            return;
-        }
-
-        this.renderer.setSize(this.viewport.width, this.viewport.height);
-
-        this.vectorFieldMesh.resize();
-        this.boidsMesh.resize();
-    }
-
     private initOGL(): void {
         const canvas = this.canvasRef().nativeElement;
 
@@ -81,10 +63,31 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
             dpr: Math.min(window.devicePixelRatio || 1, 2),
         });
 
+        const size = this.getSize();
         const gl = this.renderer.gl;
 
         this.vectorFieldMesh.init(gl);
-        this.boidsMesh.init(gl);
+        this.boidsMesh.init(gl, size);
+    }
+
+    protected onResize(): void {
+        const size = this.getSize();
+        this.viewport.resize(size);
+
+        this.renderer.setSize(size.width, size.height);
+
+        this.vectorFieldMesh.resize();
+        this.boidsMesh.resize();
+    }
+
+    private getSize(): Size {
+        const canvas = this.canvasRef().nativeElement;
+        const parent = canvas.parentElement;
+
+        return {
+            width: parent?.clientWidth ?? 1,
+            height: parent?.clientHeight ?? 1,
+        };
     }
 
     private readonly animate = (): void => {

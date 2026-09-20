@@ -1,15 +1,18 @@
 import { Vec2 } from 'ogl';
+import { Size } from './size';
 
 export class Viewport2D {
-    public width = 0;
-    public height = 0;
+    public size: Size = {
+        width: 1,
+        height: 1
+    };
+
     public zoom = 1.0;
 
     public cameraPosition: Vec2 = new Vec2();
 
-    public resize(width: number, height: number): void {
-        this.width = width;
-        this.height = height;
+    public resize(size: Size): void {
+        this.size = size;
     }
 
     /**
@@ -19,8 +22,8 @@ export class Viewport2D {
       * viewport.worldToNdc(new Vec2(-400, -300)); // Vec2(-1, -1)
      */
     public worldToNdc(world: Vec2): Vec2 {
-        const ndcX = ((world.x - this.cameraPosition.x) * this.zoom) / (this.width / 2);
-        const ndcY = ((world.y - this.cameraPosition.y) * this.zoom) / (this.height / 2);
+        const ndcX = ((world.x - this.cameraPosition.x) * this.zoom) / (this.size.width / 2);
+        const ndcY = ((world.y - this.cameraPosition.y) * this.zoom) / (this.size.height / 2);
 
         return new Vec2(ndcX, ndcY);
     }
@@ -32,8 +35,8 @@ export class Viewport2D {
       * viewport.ndcToWorld(new Vec2(-1, -1)); // Vec2(-400, -300)
      */
     public ndcToWorld(ndc: Vec2): Vec2 {
-        const worldX = (ndc.x * (this.width / 2)) / this.zoom + this.cameraPosition.x;
-        const worldY = (ndc.y * (this.height / 2)) / this.zoom + this.cameraPosition.y;
+        const worldX = (ndc.x * (this.size.width / 2)) / this.zoom + this.cameraPosition.x;
+        const worldY = (ndc.y * (this.size.height / 2)) / this.zoom + this.cameraPosition.y;
 
         return new Vec2(worldX, worldY);
     }
@@ -45,8 +48,8 @@ export class Viewport2D {
      * viewport.screenToWorld(new Vec2(0, 0)); // Vec2(-400, 300)
      */
     public screenToWorld(pixel: Vec2): Vec2 {
-        const ndcX = (pixel.x / this.width) * 2 - 1;
-        const ndcY = -(pixel.y / this.height) * 2 + 1;
+        const ndcX = (pixel.x / this.size.width) * 2 - 1;
+        const ndcY = -(pixel.y / this.size.height) * 2 + 1;
 
         return this.ndcToWorld(new Vec2(ndcX, ndcY));
     }

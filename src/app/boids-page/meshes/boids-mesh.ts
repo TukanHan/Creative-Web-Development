@@ -6,6 +6,7 @@ import { Boid } from './boid';
 import { Viewport2D } from '../mesh-frame/viewport-2d';
 import { MeshController } from './mesh-controler.interface';
 import { MeshFrame } from '../mesh-frame/mesh-frame';
+import { Size } from '../mesh-frame/size';
 
 export class BoidsMesh implements MeshController {
     private mesh!: Mesh;
@@ -22,7 +23,7 @@ export class BoidsMesh implements MeshController {
 
     constructor(private readonly viewport: Viewport2D) {}
 
-    public init(gl: OGLRenderingContext): void {
+    public init(gl: OGLRenderingContext, size: Size): void {
         this.program = new Program(gl, {
             vertex: vertexShader,
             fragment: fragmentShader,
@@ -40,29 +41,40 @@ export class BoidsMesh implements MeshController {
             geometry: new Geometry(gl),
         });
 
-        this.initBoids();
+        this.initBoids(size);
     }
 
-    private initBoids(): void {
-        for (let i = -100; i < 100; i++) {
-            for (let j = -50; j < 50; j++) {
-                const pos = new Vec2(i * 20, j * 20);
-                this.boids.push(new Boid(pos));
+    private initBoids(size: Size): void {
+        const gridDensity = 15;
+
+        const cols = Math.floor((size.width * 1.3) / gridDensity);
+        const rows = Math.floor((size.height * 1.3) / gridDensity);
+
+        const startX = (this.viewport.size.width - (cols - 1) * gridDensity) / 2;
+        const startY = (this.viewport.size.height - (rows - 1) * gridDensity) / 2;
+
+        const totalBoids = cols * rows;
+
+        this.positions = new Float32Array(totalBoids * 2);
+        this.velocities = new Float32Array(totalBoids * 2);
+        this.ids = Float32Array.from({ length: totalBoids }, (_, i) => i);
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const offsetX = (Math.random() - 0.5) * 2 * gridDensity;
+                const offsetY = (Math.random() - 0.5) * 2 * gridDensity;
+
+                const x = startX + col * gridDensity + offsetX;
+                const y = startY + row * gridDensity + offsetY;
+
+                this.boids.push(new Boid(new Vec2(x, y)));
             }
-        }
-
-        this.positions = new Float32Array(this.boids.length * 2);
-        this.velocities = new Float32Array(this.boids.length * 2);
-        this.ids = new Float32Array(this.boids.length);
-
-        for(let i = 0; i< this.boids.length; ++i) {
-            this.ids[i] = i;
         }
     }
 
     public resize(): void {
-        this.resolutionUniform.value[0] = this.viewport.width;
-        this.resolutionUniform.value[1] = this.viewport.height;
+        this.resolutionUniform.value[0] = this.viewport.size.width;
+        this.resolutionUniform.value[1] = this.viewport.size.height;
 
         this.mesh.geometry = new Geometry(this.mesh.gl, {
             aPosition: { size: 2, data: this.positions },

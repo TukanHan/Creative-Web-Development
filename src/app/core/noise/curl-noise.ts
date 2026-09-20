@@ -20,7 +20,7 @@ export function getCurl2D(
     x: number,
     y: number,
     t: number = 0,
-    frequency: number = 0.002,
+    frequency: number = 0.0018,
     octaves: number = 2,
 ): { vx: number; vy: number } {
     const eps = 0.001;

@@ -42,11 +42,11 @@ export class VectorFieldMesh implements MeshController {
     }
 
     public resize(): void {
-        this.resolution[0] = this.viewport.width;
-        this.resolution[1] = this.viewport.height;
+        this.resolution[0] = this.viewport.size.width;
+        this.resolution[1] = this.viewport.size.height;
 
-        this.cols = Math.floor(this.viewport.width / this.GRID_SPACING);
-        this.rows = Math.floor(this.viewport.height / this.GRID_SPACING);
+        this.cols = Math.floor(this.viewport.size.width / this.GRID_SPACING);
+        this.rows = Math.floor(this.viewport.size.height / this.GRID_SPACING);
 
         if (this.cols <= 0 || this.rows <= 0) {
             return;
@@ -57,8 +57,8 @@ export class VectorFieldMesh implements MeshController {
         this.angles = new Float32Array(particleCount);
         this.lengths = new Float32Array(particleCount);
 
-        const startX = (this.viewport.width - (this.cols - 1) * this.GRID_SPACING) / 2;
-        const startY = (this.viewport.height - (this.rows - 1) * this.GRID_SPACING) / 2;
+        const startX = (this.viewport.size.width - (this.cols - 1) * this.GRID_SPACING) / 2;
+        const startY = (this.viewport.size.height - (this.rows - 1) * this.GRID_SPACING) / 2;
 
         let idx = 0;
         for (let r = 0; r < this.rows; r++) {
