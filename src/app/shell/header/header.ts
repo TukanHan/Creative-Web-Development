@@ -20,7 +20,7 @@ import { LinkGroup } from './link-group/link-group';
                     Black hole
                 </a>
             </app-link-group>
-            <a class="link" routerLink="/boids" routerLinkActive="active-link">Boidy</a>
+            <a class="link" routerLink="/sparks" routerLinkActive="active-link">Sparks</a>
         </nav>
     `,
     styleUrl: './header.css',

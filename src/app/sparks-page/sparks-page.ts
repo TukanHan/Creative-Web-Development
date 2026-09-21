@@ -1,14 +1,14 @@
 import { Component, ElementRef, viewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Renderer, Vec2 } from 'ogl';
 import { VectorFieldMesh } from './meshes/vector-field-mesh';
-import { BoidsMesh } from './meshes/boids-mesh';
+import { SparksMesh } from './meshes/sparks-mesh';
 import { Viewport2D } from './mesh-frame/viewport-2d';
 import { Clock } from './mesh-frame/clock';
 import { MeshFrame } from './mesh-frame/mesh-frame';
 import { Size } from './mesh-frame/size';
 
 @Component({
-    selector: 'app-boids-page',
+    selector: 'app-sparks-page',
     template: `<canvas #canvas></canvas>`,
     styles: `
         :host {
@@ -33,7 +33,7 @@ import { Size } from './mesh-frame/size';
         '(window:pointerup)': 'onPointerUp()',
     },
 })
-export class BoidsPage implements AfterViewInit, OnDestroy {
+export class SparksPage implements AfterViewInit, OnDestroy {
     protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
     private renderer!: Renderer;
@@ -45,7 +45,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
     private isMouseDown = false;
 
     private readonly vectorFieldMesh = new VectorFieldMesh(this.viewport);
-    private readonly boidsMesh = new BoidsMesh(this.viewport);
+    private readonly sparksMesh = new SparksMesh(this.viewport);
 
     public ngAfterViewInit(): void {
         this.initOGL();
@@ -67,7 +67,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         const gl = this.renderer.gl;
 
         this.vectorFieldMesh.init(gl);
-        this.boidsMesh.init(gl, size);
+        this.sparksMesh.init(gl, size);
     }
 
     protected onResize(): void {
@@ -77,7 +77,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         this.renderer.setSize(size.width, size.height);
 
         this.vectorFieldMesh.resize();
-        this.boidsMesh.resize();
+        this.sparksMesh.resize();
     }
 
     private getSize(): Size {
@@ -109,7 +109,7 @@ export class BoidsPage implements AfterViewInit, OnDestroy {
         };
 
         this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT);
-        this.renderer.render({ scene: this.boidsMesh.update(frame) });
+        this.renderer.render({ scene: this.sparksMesh.update(frame) });
         //this.renderer.render({ scene: this.vectorFieldMesh.update(frame), clear: false });
     };
 

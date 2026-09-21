@@ -1,14 +1,14 @@
 import { Geometry, Mesh, OGLRenderingContext, Program, Vec2 } from 'ogl';
 
-import vertexShader from '../shaders/boids.vert.glsl';
-import fragmentShader from '../shaders/boids.frag.glsl';
-import { Boid } from './boid';
+import vertexShader from '../shaders/sparks.vert.glsl';
+import fragmentShader from '../shaders/sparks.frag.glsl';
+import { Spark } from './spark';
 import { Viewport2D } from '../mesh-frame/viewport-2d';
 import { MeshController } from './mesh-controler.interface';
 import { MeshFrame } from '../mesh-frame/mesh-frame';
 import { Size } from '../mesh-frame/size';
 
-export class BoidsMesh implements MeshController {
+export class SparksMesh implements MeshController {
     private mesh!: Mesh;
     private program!: Program;
 
@@ -19,7 +19,7 @@ export class BoidsMesh implements MeshController {
     private velocities!: Float32Array;
     private ids!: Float32Array;
 
-    private readonly boids: Boid[] = [];
+    private readonly sparks: Spark[] = [];
 
     constructor(private readonly viewport: Viewport2D) {}
 
@@ -41,10 +41,10 @@ export class BoidsMesh implements MeshController {
             geometry: new Geometry(gl),
         });
 
-        this.initBoids(size);
+        this.initSparks(size);
     }
 
-    private initBoids(size: Size): void {
+    private initSparks(size: Size): void {
         const gridDensity = 15;
 
         const cols = Math.floor((size.width * 1.3) / gridDensity);
@@ -53,11 +53,11 @@ export class BoidsMesh implements MeshController {
         const startX = (this.viewport.size.width - (cols - 1) * gridDensity) / 2;
         const startY = (this.viewport.size.height - (rows - 1) * gridDensity) / 2;
 
-        const totalBoids = cols * rows;
+        const totalSparks = cols * rows;
 
-        this.positions = new Float32Array(totalBoids * 2);
-        this.velocities = new Float32Array(totalBoids * 2);
-        this.ids = Float32Array.from({ length: totalBoids }, (_, i) => i);
+        this.positions = new Float32Array(totalSparks * 2);
+        this.velocities = new Float32Array(totalSparks * 2);
+        this.ids = Float32Array.from({ length: totalSparks }, (_, i) => i);
 
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
@@ -67,7 +67,7 @@ export class BoidsMesh implements MeshController {
                 const x = startX + col * gridDensity + offsetX;
                 const y = startY + row * gridDensity + offsetY;
 
-                this.boids.push(new Boid(new Vec2(x, y)));
+                this.sparks.push(new Spark(new Vec2(x, y)));
             }
         }
     }
@@ -86,16 +86,16 @@ export class BoidsMesh implements MeshController {
     public update(frame: MeshFrame): Mesh {
         this.timeUniform.value = frame.clock.time;
 
-        for (let idx = 0; idx < this.boids.length; idx++) {
-            const boid = this.boids[idx];
-            boid.update(frame.clock, frame.mouse);
+        for (let idx = 0; idx < this.sparks.length; idx++) {
+            const spark = this.sparks[idx];
+            spark.update(frame.clock, frame.mouse);
 
-            const cameraPos = this.viewport.worldToNdc(boid.position);
+            const cameraPos = this.viewport.worldToNdc(spark.position);
             this.positions[idx * 2] = cameraPos.x;
             this.positions[idx * 2 + 1] = cameraPos.y;
 
-            this.velocities[idx * 2] = boid.velocity.x;
-            this.velocities[idx * 2 + 1] = boid.velocity.y;
+            this.velocities[idx * 2] = spark.velocity.x;
+            this.velocities[idx * 2 + 1] = spark.velocity.y;
         }
 
         this.mesh.geometry.attributes['aVelocity'].needsUpdate = true;

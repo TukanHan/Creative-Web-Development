@@ -3,14 +3,14 @@ import { getCurl2D } from '../../core/noise/curl-noise';
 import { Clock } from '../mesh-frame/clock';
 import { MouseData } from '../mesh-frame/mouse-data';
 
-const BOID_SPEED: number = 400;
-const BOID_RETURN_STRENGTH = 0.002;
+const SPARK_SPEED: number = 400;
+const SPARK_RETURN_STRENGTH = 0.002;
 
 const MOUSE_REPELLING_STRENGTH = 10.0;
 const MOUSE_RADIUS = 200;
 const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 
-export class Boid {
+export class Spark {
     public position: Vec2;
     public velocity: Vec2 = new Vec2(0, 0);
 
@@ -21,15 +21,15 @@ export class Boid {
     public update(clock: Clock, mouse?: MouseData): void {
         this.velocity = this.calcVelocity(clock, mouse);
 
-        this.position.x += this.velocity.x * clock.deltaTime * BOID_SPEED;
-        this.position.y += this.velocity.y * clock.deltaTime * BOID_SPEED;
+        this.position.x += this.velocity.x * clock.deltaTime * SPARK_SPEED;
+        this.position.y += this.velocity.y * clock.deltaTime * SPARK_SPEED;
     }
 
     private calcVelocity(clock: Clock, mouse?: MouseData): Vec2 {
         const curl = getCurl2D(this.position.x, this.position.y, clock.time);
 
-        const anchorForceX = (this.originPosition.x - this.position.x) * BOID_RETURN_STRENGTH;
-        const anchorForceY = (this.originPosition.y - this.position.y) * BOID_RETURN_STRENGTH;
+        const anchorForceX = (this.originPosition.x - this.position.x) * SPARK_RETURN_STRENGTH;
+        const anchorForceY = (this.originPosition.y - this.position.y) * SPARK_RETURN_STRENGTH;
 
         const mouseForce = this.calculateMouseForce(mouse);
 

@@ -20,8 +20,8 @@ export const routes: Routes = [
         loadComponent: () => import('./ornament-page/ornament-page').then((m) => m.OrnamentPage),
     },
     {
-        path: 'boids',
-        loadComponent: () => import('./boids-page/boids-page').then((m) => m.BoidsPage),
+        path: 'sparks',
+        loadComponent: () => import('./sparks-page/sparks-page').then((m) => m.SparksPage),
     },
     {
         path: 'shader',
