@@ -18,6 +18,7 @@ export class SparksMesh implements MeshController {
     private positions!: Float32Array;
     private velocities!: Float32Array;
     private ids!: Float32Array;
+    private angers!: Float32Array;
 
     private readonly sparks: Spark[] = [];
 
@@ -57,6 +58,7 @@ export class SparksMesh implements MeshController {
 
         this.positions = new Float32Array(totalSparks * 2);
         this.velocities = new Float32Array(totalSparks * 2);
+        this.angers = new Float32Array(totalSparks);
         this.ids = Float32Array.from({ length: totalSparks }, (_, i) => i);
 
         for (let row = 0; row < rows; row++) {
@@ -80,6 +82,7 @@ export class SparksMesh implements MeshController {
             aPosition: { size: 2, data: this.positions },
             aVelocity: { size: 2, data: this.velocities },
             aID: { size: 1, data: this.ids },
+            aAnger: { size: 1, data: this.angers },
         });
     }
 
@@ -96,10 +99,13 @@ export class SparksMesh implements MeshController {
 
             this.velocities[idx * 2] = spark.velocity.x;
             this.velocities[idx * 2 + 1] = spark.velocity.y;
+
+            this.angers[idx] = spark.anger;
         }
 
         this.mesh.geometry.attributes['aVelocity'].needsUpdate = true;
         this.mesh.geometry.attributes['aPosition'].needsUpdate = true;
+        this.mesh.geometry.attributes['aAnger'].needsUpdate = true;
 
         return this.mesh;
     }
