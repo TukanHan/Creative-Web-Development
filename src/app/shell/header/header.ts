@@ -7,7 +7,12 @@ import { LinkGroup } from './link-group/link-group';
     imports: [RouterLink, RouterLinkActive, LinkGroup],
     template: `
         <nav class="links">
-            <a class="link" routerLink="/cow" routerLinkActive="active-link">Parallaxa</a>
+            <app-link-group>
+                <a main-link class="link" routerLink="/scroll" routerLinkActive="active-link">
+                    Przewijanie
+                </a>
+                <a sub-link routerLink="/scroll/parallax" routerLinkActive="active-link">Parallaxa</a>
+            </app-link-group>
             <a class="link" routerLink="/ornament" routerLinkActive="active-link">Ornamenty</a>
             <app-link-group>
                 <a main-link class="link" routerLink="/shader" routerLinkActive="active-link">

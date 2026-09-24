@@ -3,20 +3,25 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: '/cow',
+        redirectTo: '/sparks',
         pathMatch: 'full',
     },
     {
-        path: 'cow',
-        loadComponent: () => import('./cow-parallax/cow-parallax').then((m) => m.CowParallax),
+        path: 'scroll',
+        redirectTo: 'scroll/parallax',
+        pathMatch: 'full',
+    },
+    {
+        path: 'scroll/parallax',
+        loadComponent: () => import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
     },
     {
         path: 'ornament',
-        loadComponent: () => import('./ornament-page/ornament-page').then((m) => m.OrnamentPage),
+        loadComponent: () => import('./features/ornament-page/ornament-page').then((m) => m.OrnamentPage),
     },
     {
         path: 'sparks',
-        loadComponent: () => import('./sparks-page/sparks-page').then((m) => m.SparksPage),
+        loadComponent: () => import('./features/sparks-page/sparks-page').then((m) => m.SparksPage),
     },
     {
         path: 'shader',
@@ -25,6 +30,6 @@ export const routes: Routes = [
     },
     {
         path: 'shader/:type',
-        loadComponent: () => import('./shaders-page/shaders-page').then((m) => m.ShadersPage),
+        loadComponent: () => import('./features/shaders-page/shaders-page').then((m) => m.ShadersPage),
     },
 ];

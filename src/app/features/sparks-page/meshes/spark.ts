@@ -1,5 +1,5 @@
 import { Vec2 } from 'ogl';
-import { getCurl2D } from '../../core/noise/curl-noise';
+import { getCurl2D } from '../../../core/noise/curl-noise';
 import { Clock } from '../mesh-frame/clock';
 import { MouseData } from '../mesh-frame/mouse-data';
 
