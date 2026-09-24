@@ -7,11 +7,6 @@ export const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: 'firewatch',
-        loadComponent: () =>
-            import('./firewatch-parallax/firewatch-parallax').then((m) => m.FirewatchParallax),
-    },
-    {
         path: 'cow',
         loadComponent: () => import('./cow-parallax/cow-parallax').then((m) => m.CowParallax),
     },

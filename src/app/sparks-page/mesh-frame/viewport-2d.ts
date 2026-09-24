@@ -4,7 +4,7 @@ import { Size } from './size';
 export class Viewport2D {
     public size: Size = {
         width: 1,
-        height: 1
+        height: 1,
     };
 
     public zoom = 1.0;
@@ -17,9 +17,9 @@ export class Viewport2D {
 
     /**
      * Converts world coordinates to WebGL normalized device coordinates.
-      * @example
-      * viewport.resize(800, 600);
-      * viewport.worldToNdc(new Vec2(-400, -300)); // Vec2(-1, -1)
+     * @example
+     * viewport.resize(800, 600);
+     * viewport.worldToNdc(new Vec2(-400, -300)); // Vec2(-1, -1)
      */
     public worldToNdc(world: Vec2): Vec2 {
         const ndcX = ((world.x - this.cameraPosition.x) * this.zoom) / (this.size.width / 2);
@@ -30,9 +30,9 @@ export class Viewport2D {
 
     /**
      * Converts WebGL normalized device coordinates to world coordinates.
-      * @example
-      * viewport.resize(800, 600);
-      * viewport.ndcToWorld(new Vec2(-1, -1)); // Vec2(-400, -300)
+     * @example
+     * viewport.resize(800, 600);
+     * viewport.ndcToWorld(new Vec2(-1, -1)); // Vec2(-400, -300)
      */
     public ndcToWorld(ndc: Vec2): Vec2 {
         const worldX = (ndc.x * (this.size.width / 2)) / this.zoom + this.cameraPosition.x;
