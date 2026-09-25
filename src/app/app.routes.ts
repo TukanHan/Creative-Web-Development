@@ -16,6 +16,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
     },
     {
+        path: 'scroll/accordion',
+        loadComponent: () => import('./features/sticky-accordion/sticky-accordion').then((m) => m.StickyAccordion),
+    },
+    {
         path: 'ornament',
         loadComponent: () => import('./features/ornament-page/ornament-page').then((m) => m.OrnamentPage),
     },
