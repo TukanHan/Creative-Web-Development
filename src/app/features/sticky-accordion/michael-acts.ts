@@ -97,8 +97,8 @@ gsap.registerPlugin(ScrollTrigger);
             justify-content: center;
             align-items: center;
 
-            border-top: dashed 2px var(--color-surface50);
-            border-bottom: dashed 2px var(--color-surface50);
+            //border-top: dashed 2px var(--color-surface50);
+            //border-bottom: dashed 2px var(--color-surface50);
         }
 
         .content {
@@ -112,6 +112,7 @@ gsap.registerPlugin(ScrollTrigger);
             .list {
                 display: flex;
                 flex-direction: column;
+                gap: 6px;
 
                 .chapter {
                     &.selected {

@@ -1,15 +1,17 @@
-import { Component, effect, ElementRef, input, OnDestroy, OnInit, viewChild } from '@angular/core';
-import { Renderer, Geometry, Program, Mesh } from 'ogl';
+import { Component, ElementRef, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { Geometry, Mesh, Program, Renderer } from 'ogl';
 
-import vertexShader from '../../core/shaders/shape.vert.glsl';
+import vertexShader from '../../../core/shaders/shape.vert.glsl';
+import fragmentShader from './smoke.frag.glsl';
 
 @Component({
-    selector: 'app-shader-preview',
+    selector: 'app-michael-background',
     template: `<canvas #canvas></canvas>`,
     styles: `
         :host {
             width: 100%;
             height: 100%;
+            position: fixed;
         }
         canvas {
             width: 100% !important;
@@ -21,9 +23,7 @@ import vertexShader from '../../core/shaders/shape.vert.glsl';
         '(window:resize)': 'resize()',
     },
 })
-export class ShaderPreview implements OnInit, OnDestroy {
-    public readonly fragmentShader = input.required<string>();
-
+export class MichaelBackground implements OnInit, OnDestroy {
     protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
     private renderer!: Renderer;
@@ -31,15 +31,8 @@ export class ShaderPreview implements OnInit, OnDestroy {
     private mesh!: Mesh;
     private animationFrameId!: number;
 
-    private timeOffset = 0;
-
     private readonly timeUniform = { value: 0 };
     private readonly resolutionUniform = { value: new Float32Array(2) };
-
-    private readonly updateShader = effect(() => {
-        this.program.setShaders({ vertex: vertexShader, fragment: this.fragmentShader() });
-        this.timeOffset = performance.now();
-    });
 
     public ngOnInit(): void {
         const canvas = this.canvasRef().nativeElement;
@@ -58,7 +51,7 @@ export class ShaderPreview implements OnInit, OnDestroy {
 
         this.program = new Program(gl, {
             vertex: vertexShader,
-            fragment: this.fragmentShader(),
+            fragment: fragmentShader,
             uniforms: {
                 uTime: this.timeUniform,
                 uResolution: this.resolutionUniform,
@@ -73,7 +66,7 @@ export class ShaderPreview implements OnInit, OnDestroy {
     }
 
     private readonly animate = (time: number): void => {
-        this.timeUniform.value = (time - this.timeOffset) * 0.001;
+        this.timeUniform.value = time * 0.001;
 
         this.renderer.render({ scene: this.mesh });
         this.animationFrameId = requestAnimationFrame(this.animate);

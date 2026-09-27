@@ -3,12 +3,14 @@ import { Component } from '@angular/core';
 import { MichaelIntro } from './michael-intro';
 import { MichaelEpilogue } from './michael-epilogue';
 import { MichaelActs } from './michael-acts';
+import { MichaelBackground } from './michael-background/michael-background';
 
 //https://codepen.io/GreenSock/pen/pomvabo
 @Component({
     selector: 'app-sticky-accordion',
-    imports: [MichaelIntro, MichaelActs, MichaelEpilogue],
+    imports: [MichaelIntro, MichaelActs, MichaelEpilogue, MichaelBackground],
     template: `
+        <app-michael-background />
         <section>
             <app-michael-intro />
         </section>

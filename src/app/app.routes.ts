@@ -8,20 +8,26 @@ export const routes: Routes = [
     },
     {
         path: 'scroll',
-        redirectTo: 'scroll/parallax',
-        pathMatch: 'full',
-    },
-    {
-        path: 'scroll/parallax',
-        loadComponent: () => import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
-    },
-    {
-        path: 'scroll/accordion',
-        loadComponent: () => import('./features/sticky-accordion/sticky-accordion').then((m) => m.StickyAccordion),
+        children: [
+            {
+                path: '',
+                redirectTo: 'parallax',
+                pathMatch: 'full',
+            },
+            {
+                path: 'parallax',
+                loadComponent: () => import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
+            },
+            {
+                path: 'accordion',
+                loadComponent: () => import('./features/sticky-accordion/sticky-accordion').then((m) => m.StickyAccordion),
+            },
+        ],
     },
     {
         path: 'ornament',
-        loadComponent: () => import('./features/ornament-page/ornament-page').then((m) => m.OrnamentPage),
+        loadComponent: () =>
+            import('./features/ornament-page/ornament-page').then((m) => m.OrnamentPage),
     },
     {
         path: 'sparks',
@@ -29,11 +35,16 @@ export const routes: Routes = [
     },
     {
         path: 'shader',
-        redirectTo: 'shader/noise',
-        pathMatch: 'full',
-    },
-    {
-        path: 'shader/:type',
-        loadComponent: () => import('./features/shaders-page/shaders-page').then((m) => m.ShadersPage),
+        children: [
+            {
+                path: '',
+                redirectTo: 'noise',
+                pathMatch: 'full',
+            },
+            {
+                path: ':type',
+                loadComponent: () => import('./features/shaders-page/shaders-page').then((m) => m.ShadersPage),
+            },
+        ],
     },
 ];
