@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { Component, ElementRef, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { Geometry, Mesh, Program, Renderer } from 'ogl';
 
 import vertexShader from '../../../core/shaders/shape.vert.glsl';
@@ -24,6 +24,9 @@ import fragmentShader from './smoke.frag.glsl';
     },
 })
 export class MichaelBackground implements OnInit, OnDestroy {
+    public readonly progress = input.required<number>();
+    private currentProgress = 0;
+
     protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
     private renderer!: Renderer;
@@ -33,6 +36,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
 
     private readonly timeUniform = { value: 0 };
     private readonly resolutionUniform = { value: new Float32Array(2) };
+    private readonly progressUniform = { value: 0 };
 
     public ngOnInit(): void {
         const canvas = this.canvasRef().nativeElement;
@@ -55,6 +59,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
             uniforms: {
                 uTime: this.timeUniform,
                 uResolution: this.resolutionUniform,
+                uProgress: this.progressUniform
             },
             transparent: true,
         });
@@ -67,6 +72,9 @@ export class MichaelBackground implements OnInit, OnDestroy {
 
     private readonly animate = (time: number): void => {
         this.timeUniform.value = time * 0.001;
+
+        this.currentProgress += (this.progress() - this.currentProgress) * 0.01; 
+        this.progressUniform.value = this.currentProgress;
 
         this.renderer.render({ scene: this.mesh });
         this.animationFrameId = requestAnimationFrame(this.animate);
