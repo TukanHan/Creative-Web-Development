@@ -117,7 +117,10 @@ gsap.registerPlugin(ScrollTrigger);
                 .chapter {
                     &.selected {
                         a {
-                            color: var(--color-shockingly-green);
+                            color: var(--color-accent);
+                            text-shadow:
+                                0 0 8px var(--story-glow-level-2),
+                                0 0 28px var(--story-glow-level-1);
                         }
 
                         .description {
@@ -133,6 +136,7 @@ gsap.registerPlugin(ScrollTrigger);
                         text-decoration: none;
                         cursor: pointer;
                         transition: color 0.3s ease;
+                        text-shadow: 0 0 6px var(--story-glow-level-2);
                     }
 
                     .description {
@@ -156,7 +160,7 @@ gsap.registerPlugin(ScrollTrigger);
                 left: 0;
                 width: 2px;
                 height: 100%;
-                background-color: var(--color-shockingly-green);
+                background-color: var(--color-accent);
             }
 
             .right {

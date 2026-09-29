@@ -1,7 +1,7 @@
 import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core';
 import { MichaelIntro } from './michael-intro';
 import { MichaelEpilogue } from './michael-epilogue';
-import { MichaelActs } from './michael-acts';
+import { MichaelActs } from './michael-acts/michael-acts';
 import { MichaelBackground } from './michael-background/michael-background';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -28,8 +28,11 @@ gsap.registerPlugin(ScrollTrigger);
         :host {
             --color-surface50: #7c7c6f;
             --color-surface-white: #fffce1;
-            --color-shockingly-green: #0ae448;
+            --color-accent: #dad527;
             --dark: #0e100f;
+            --story-glow-level-1: rgba(255, 252, 225, 0.2);
+            --story-glow-level-2: rgba(255, 252, 225, 0.4);
+            --story-glow-level-3: rgba(255, 252, 225, 0.8);
 
             display: block;
             background: var(--dark);

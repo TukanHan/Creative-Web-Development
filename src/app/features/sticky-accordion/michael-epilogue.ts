@@ -54,7 +54,7 @@ gsap.registerPlugin(ScrollTrigger);
 
                 &.highlighted {
                     opacity: 1;
-                    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+                    text-shadow: 0 0 12px var(--story-glow-level-2);
                 }
             }
         }
@@ -81,7 +81,7 @@ gsap.registerPlugin(ScrollTrigger);
         .end-label {
             font-size: 6rem;
             margin: 0;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 30px var(--story-glow-level-1);
         }
     `,
 })

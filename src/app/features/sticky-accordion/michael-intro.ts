@@ -77,9 +77,9 @@ gsap.registerPlugin(ScrollTrigger);
                 color: #ffffff;
 
                 text-shadow:
-                    0 0 10px rgba(255, 255, 255, 0.8),
-                    0 0 30px rgba(255, 255, 255, 0.4),
-                    0 0 60px rgba(212, 175, 55, 0.3);
+                    0 0 10px var(--story-glow-level-3),
+                    0 0 30px var(--story-glow-level-2),
+                    0 0 60px var(--story-glow-level-1);
             }
         }
 
@@ -89,6 +89,9 @@ gsap.registerPlugin(ScrollTrigger);
             font-style: italic;
             line-height: 1.4;
             transform: translateY(10px) scale(0.95);
+            text-shadow:
+                0 0 8px var(--story-glow-level-2),
+                0 0 28px var(--story-glow-level-1);
 
             &.active {
                 transform: translateY(0) scale(1);
@@ -98,6 +101,9 @@ gsap.registerPlugin(ScrollTrigger);
         .quote {
             font-size: 3rem;
             line-height: 1.5;
+            text-shadow:
+                0 0 6px var(--story-glow-level-2),
+                0 0 22px var(--story-glow-level-1);
         }
 
         .scroll-hint {
@@ -134,11 +140,11 @@ gsap.registerPlugin(ScrollTrigger);
         @keyframes cinematicBreath {
             0% {
                 opacity: 0.1;
-                text-shadow: 0 0 2px rgba(255, 255, 255, 0.1);
+                text-shadow: 0 0 2px var(--story-glow-level-1);
             }
             100% {
                 opacity: 0.4;
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+                text-shadow: 0 0 10px var(--story-glow-level-2);
             }
         }
     `,

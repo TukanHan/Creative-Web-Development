@@ -16,11 +16,15 @@ export const routes: Routes = [
             },
             {
                 path: 'parallax',
-                loadComponent: () => import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
+                loadComponent: () =>
+                    import('./features/cow-parallax/cow-parallax').then((m) => m.CowParallax),
             },
             {
                 path: 'accordion',
-                loadComponent: () => import('./features/sticky-accordion/sticky-accordion').then((m) => m.StickyAccordion),
+                loadComponent: () =>
+                    import('./features/sticky-accordion/sticky-accordion').then(
+                        (m) => m.StickyAccordion,
+                    ),
             },
         ],
     },
@@ -43,7 +47,8 @@ export const routes: Routes = [
             },
             {
                 path: ':type',
-                loadComponent: () => import('./features/shaders-page/shaders-page').then((m) => m.ShadersPage),
+                loadComponent: () =>
+                    import('./features/shaders-page/shaders-page').then((m) => m.ShadersPage),
             },
         ],
     },

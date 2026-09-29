@@ -11,8 +11,12 @@ import { LinkGroup } from './link-group/link-group';
                 <a main-link class="link" routerLink="/scroll" routerLinkActive="active-link">
                     Przewijanie
                 </a>
-                <a sub-link routerLink="/scroll/parallax" routerLinkActive="active-link">Parallaxa</a>
-                <a sub-link routerLink="/scroll/accordion" routerLinkActive="active-link">Akordeon</a>
+                <a sub-link routerLink="/scroll/parallax" routerLinkActive="active-link"
+                    >Parallaxa</a
+                >
+                <a sub-link routerLink="/scroll/accordion" routerLinkActive="active-link"
+                    >Akordeon</a
+                >
             </app-link-group>
             <a class="link" routerLink="/ornament" routerLinkActive="active-link">Ornamenty</a>
             <app-link-group>
