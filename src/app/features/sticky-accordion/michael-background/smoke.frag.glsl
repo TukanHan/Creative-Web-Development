@@ -39,9 +39,8 @@ void main() {
     // ODWRÓCENIE STANÓW: 1.0 na samej górze (uProgress = 0.0), 0.0 na dole (uProgress = 1.0)
     float tension = pow(1.0 - uProgress, 1.3);
 
-    // --- CZAS I STANOWOŚĆ ---
-    // Na początku dym jest dynamiczniejszy i gęstszy, na dole zwalnia i zanika
-    float flowTime = uTime * mix(0.3, 0.8, tension);
+    // uTime is accumulated using the current progress-dependent flow speed.
+    float flowTime = uTime;
 
     // Dynamiczna skala szumu (większa gęstość/skala na górze, gładka/duża na dole)
     float scale = mix(1.8, 3.2, tension);

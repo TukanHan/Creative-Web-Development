@@ -33,6 +33,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
     private program!: Program;
     private mesh!: Mesh;
     private animationFrameId!: number;
+    private previousFrameTime?: number;
 
     private readonly timeUniform = { value: 0 };
     private readonly resolutionUniform = { value: new Float32Array(2) };
@@ -59,7 +60,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
             uniforms: {
                 uTime: this.timeUniform,
                 uResolution: this.resolutionUniform,
-                uProgress: this.progressUniform
+                uProgress: this.progressUniform,
             },
             transparent: true,
         });
@@ -67,13 +68,16 @@ export class MichaelBackground implements OnInit, OnDestroy {
         this.mesh = new Mesh(gl, { geometry, program: this.program });
 
         this.resize();
-        this.animate(0);
+        this.animationFrameId = requestAnimationFrame(this.animate);
     }
 
     private readonly animate = (time: number): void => {
-        this.timeUniform.value = time * 0.001;
+        const deltaTime = Math.min((time - (this.previousFrameTime ?? time)) * 0.001, 0.05);
+        this.previousFrameTime = time;
 
-        this.currentProgress += (this.progress() - this.currentProgress) * 0.01; 
+        this.currentProgress += (this.progress() - this.currentProgress) * 0.01;
+        const tension = Math.pow(1 - this.currentProgress, 1.3);
+        this.timeUniform.value += deltaTime * (0.3 + 0.5 * tension);
         this.progressUniform.value = this.currentProgress;
 
         this.renderer.render({ scene: this.mesh });
