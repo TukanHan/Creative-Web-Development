@@ -10,10 +10,10 @@ gsap.registerPlugin(ScrollTrigger);
         <div class="text-stage">
             <header class="intro-text title" [class.active]="step() === 'title'">
                 <p class="sub">Prawdziwa, Nieocenzurowana:</p>
-                <h1 class="main">Historia o Niemym Michałku</h1>
+                <h1 class="main">Legenda o Niemym Michałku</h1>
             </header>
             <h2 class="intro-text subtitle" [class.active]="step() === 'subtitle'">
-                Oto pełna wersja wydarzeń, której batiuszka zabronił opowiadać przy kieliszku.
+                Pół legenda, pół prawda, pół nieprawda.
             </h2>
             <p class="intro-text quote" [class.active]="step() === 'quote'">
                 „Wszyscy we wsi myśleli, że narodził się bez głosu.<br />
@@ -84,7 +84,7 @@ gsap.registerPlugin(ScrollTrigger);
         }
 
         .subtitle {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 400;
             font-style: italic;
             line-height: 1.4;

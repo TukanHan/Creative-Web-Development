@@ -57,19 +57,19 @@ gsap.registerPlugin(ScrollTrigger);
 
             <div class="right">
                 <div #slideItem class="slide">
-                    <img src="https://assets.codepen.io/16327/portrait-number-01.png" alt="Akt 1" />
+                    <img src="michael/act-1.webp" alt="Akt 1" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="https://assets.codepen.io/16327/portrait-number-02.png" alt="Akt 2" />
+                    <img src="michael/act-2.webp" alt="Akt 2" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="https://assets.codepen.io/16327/portrait-number-03.png" alt="Akt 3" />
+                    <img src="michael/act-3.webp" alt="Akt 3" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="https://assets.codepen.io/16327/portrait-number-04.png" alt="Akt 4" />
+                    <img src="michael/act-4.webp" alt="Akt 4" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="https://assets.codepen.io/16327/portrait-number-05.png" alt="Akt 5" />
+                    <img src="michael/act-5.webp" alt="Akt 5" />
                 </div>
             </div>
         </div>
@@ -126,13 +126,10 @@ gsap.registerPlugin(ScrollTrigger);
             }
 
             .right {
-                flex: 1;
-                position: relative;
-                height: 500px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+               
                 .slide {
                     position: absolute;
                     inset: 0;
@@ -143,11 +140,9 @@ gsap.registerPlugin(ScrollTrigger);
                     visibility: hidden;
 
                     img {
-                        max-width: 340px;
-                        width: 100%;
-                        height: auto;
-                        border-radius: 12px;
-                        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+                        height: 100vh;
+                        filter: saturate(0.5) opacity(0.7);
+                        mask-image: radial-gradient(ellipse at center, black 0%, transparent 100%);
                     }
                 }
             }

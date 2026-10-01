@@ -41,7 +41,7 @@ import { Component, input, output } from '@angular/core';
 
             a {
                 font-size: clamp(2rem, 3vw, 3.2rem);
-                color: var(--story-accent);
+                color: var(--story-primary);
                 opacity: 0.35;
                 text-decoration: none;
                 cursor: pointer;
