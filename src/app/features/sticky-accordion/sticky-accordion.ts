@@ -1,4 +1,11 @@
-import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+    afterNextRender,
+    Component,
+    DestroyRef,
+    ElementRef,
+    inject,
+    signal,
+} from '@angular/core';
 import { MichaelIntro } from './michael-intro';
 import { MichaelEpilogue } from './michael-epilogue';
 import { MichaelActs } from './michael-acts/michael-acts';
@@ -8,7 +15,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-//https://codepen.io/GreenSock/pen/pomvabo
 @Component({
     selector: 'app-sticky-accordion',
     imports: [MichaelIntro, MichaelActs, MichaelEpilogue, MichaelBackground],
@@ -26,22 +32,22 @@ gsap.registerPlugin(ScrollTrigger);
     `,
     styles: `
         :host {
-            --color-surface50: #7c7c6f;
-            --color-surface-white: #fffce1;
-            --color-accent: #dad527;
-            --dark: #0e100f;
+            --color-primary: #fffce1;
+            --story-accent: #ffffff;
+            --story-background: #0e100f;
             --story-glow-level-1: rgba(255, 252, 225, 0.2);
             --story-glow-level-2: rgba(255, 252, 225, 0.4);
             --story-glow-level-3: rgba(255, 252, 225, 0.8);
 
             display: block;
-            background: var(--dark);
+            background: var(--story-background);
             font-family: 'Cormorant Garamond', serif;
-            color: var(--color-surface-white);
+            color: var(--color-primary);
         }
     `,
 })
 export class StickyAccordion {
+    private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     private readonly destroyRef = inject(DestroyRef);
     private ctx?: globalThis.ScrollTrigger;
 
@@ -54,7 +60,7 @@ export class StickyAccordion {
 
     private initAnimation(): globalThis.ScrollTrigger {
         return ScrollTrigger.create({
-            trigger: 'host',
+            trigger: this.hostRef.nativeElement,
             start: 'top top',
             end: 'bottom bottom',
             scrub: true,

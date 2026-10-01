@@ -74,7 +74,7 @@ gsap.registerPlugin(ScrollTrigger);
                 text-transform: uppercase;
                 letter-spacing: 0.12em;
                 font-weight: 900;
-                color: #ffffff;
+                color: var(--story-accent);
 
                 text-shadow:
                     0 0 10px var(--story-glow-level-3),

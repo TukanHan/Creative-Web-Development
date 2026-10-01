@@ -9,96 +9,79 @@ import {
 } from '@angular/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Act } from './act';
 
 gsap.registerPlugin(ScrollTrigger);
 
 @Component({
     selector: 'app-michael-acts',
-    template: ` <div class="content">
-        <nav class="list">
-            <div #stepItem class="chapter">
-                <a href="#step-0" (click)="goToStep($event, 0)">Lament nad Ciszą</a>
-                <div class="description">
-                    <div class="description__inner">
-                        Michałek od dziecka nie wykrztusił ani słowa. Matka płakała w poduszkę,
-                        batiuszka odprawiał egzorcyzmy, a wieś współczuła chłopcu, który żył w
-                        wiecznym, głębokim milczeniu.
-                    </div>
+    imports: [Act],
+    template: `
+        <div class="content">
+            <div class="fill-track">
+                <div class="fill" #fill></div>
+            </div>
+
+            <nav class="list">
+                <app-act #stepItem (clicked)="goToStep($event, 0)" title="Lament nad Ciszą">
+                    Michałek od dziecka nie wykrztusił ani słowa. Matka płakała w poduszkę,
+                    batiuszka odprawiał egzorcyzmy, a wieś współczuła chłopcu, który żył w wiecznym,
+                    głębokim milczeniu.
+                </app-act>
+                <app-act #stepItem (clicked)="goToStep($event, 1)" title="Odpustowy Kupiec">
+                    Podczas odpustu św. Antoniego, Michałek oddał pięćdziesiąt groszy skradzionych
+                    ze skarbonki sołtysa wędrownemu handlarzowi. W zamian otrzymał zakazany owoc
+                    cywilizacji: gumę Turbo z obrazkiem auta.
+                </app-act>
+                <app-act #stepItem (clicked)="goToStep($event, 2)" title="Trzy Dni Męki">
+                    Smak owoców leśnych zniknął po dziesięciu sekundach, ale Michałek nie
+                    odpuszczał. Żuł Tę Samą Gumę przez trzy dni i trzy noce. Mięśnie żuchwy
+                    pracowały jak tłoki w parowozie, a guma zmieniła się w twardy jak skała kauczuk.
+                </app-act>
+                <app-act #stepItem (clicked)="goToStep($event, 3)" title="Ciemność Bolesna">
+                    Trzeciego dnia ciśnienie w czaszce osiągnęło poziom krytyczny. Zgromadzona siła
+                    w żuchwie wystrzeliła w nerwy wzrokowe. W oczach Michałka zapadła absolutna,
+                    nieprzenikniona ciemność. Oślepł jak kret.
+                </app-act>
+                <app-act
+                    #stepItem
+                    (clicked)="goToStep($event, 4)"
+                    title="Wielki Wrzask i Wielki Wstyd"
+                >
+                    Obojętny dotąd chłopak, przerażony nagłą utratą wzroku, zapomniał o swojej roli.
+                    Rozwarł usta i wrzasnął na całą wieś:
+                    <strong class="curse">„O, KURWA!”</strong>. Po czym, zorientowawszy się co
+                    zrobił i spłonąwszy ze wstydu przed ludźmi – zamilkł już na wieki.
+                </app-act>
+            </nav>
+
+            <div class="right">
+                <div #slideItem class="slide">
+                    <img src="https://assets.codepen.io/16327/portrait-number-01.png" alt="Akt 1" />
                 </div>
-            </div>
-            <div #stepItem class="chapter">
-                <a href="#step-1" (click)="goToStep($event, 1)">Odpustowy Kupiec</a>
-                <div class="description">
-                    <div class="description__inner">
-                        Podczas odpustu św. Antoniego, Michałek oddał pięćdziesiąt groszy
-                        skradzionych ze skarbonki sołtysa wędrownemu handlarzowi. W zamian otrzymał
-                        zakazany owoc cywilizacji: gumę Turbo z obrazkiem auta.
-                    </div>
+                <div #slideItem class="slide">
+                    <img src="https://assets.codepen.io/16327/portrait-number-02.png" alt="Akt 2" />
                 </div>
-            </div>
-            <div #stepItem class="chapter">
-                <a href="#step-2" (click)="goToStep($event, 2)">Trzy Dni Męki</a>
-                <div class="description">
-                    <div class="description__inner">
-                        Smak owoców leśnych zniknął po dziesięciu sekundach, ale Michałek nie
-                        odpuszczał. Żuł Tę Samą Gumę przez trzy dni i trzy noce. Mięśnie żuchwy
-                        pracowały jak tłoki w parowozie, a guma zmieniła się w twardy jak skała
-                        kauczuk.
-                    </div>
+                <div #slideItem class="slide">
+                    <img src="https://assets.codepen.io/16327/portrait-number-03.png" alt="Akt 3" />
                 </div>
-            </div>
-            <div #stepItem class="chapter">
-                <a href="#step-3" (click)="goToStep($event, 3)">Ciemność Bolesna</a>
-                <div class="description">
-                    <div class="description__inner">
-                        Trzeciego dnia ciśnienie w czaszce osiągnęło poziom krytyczny. Zgromadzona
-                        siła w żuchwie wystrzeliła w nerwy wzrokowe. W oczach Michałka zapadła
-                        absolutna, nieprzenikniona ciemność. Oślepł jak kret.
-                    </div>
+                <div #slideItem class="slide">
+                    <img src="https://assets.codepen.io/16327/portrait-number-04.png" alt="Akt 4" />
                 </div>
-            </div>
-            <div #stepItem class="chapter">
-                <a href="#step-4" (click)="goToStep($event, 4)">Wielki Wrzask i Wielki Wstyd</a>
-                <div class="description">
-                    <div class="description__inner">
-                        Obojętny dotąd chłopak, przerażony nagłą utratą wzroku, zapomniał o swojej
-                        roli. Rozwarł usta i wrzasnął na całą wieś: „O, KURWA!”. Po czym,
-                        zorientowawszy się co zrobił i spłonawszy ze wstydu przed ludźmi – zamilkł
-                        już na wieki.
-                    </div>
+                <div #slideItem class="slide">
+                    <img src="https://assets.codepen.io/16327/portrait-number-05.png" alt="Akt 5" />
                 </div>
-            </div>
-        </nav>
-        <div class="fill" #fill></div>
-        <div class="right">
-            <div #slideItem class="slide">
-                <img src="https://assets.codepen.io/16327/portrait-number-01.png" alt="" />
-            </div>
-            <div #slideItem class="slide">
-                <img src="https://assets.codepen.io/16327/portrait-number-02.png" alt="" />
-            </div>
-            <div #slideItem class="slide">
-                <img src="https://assets.codepen.io/16327/portrait-number-03.png" alt="" />
-            </div>
-            <div #slideItem class="slide">
-                <img src="https://assets.codepen.io/16327/portrait-number-04.png" alt="" />
-            </div>
-            <div #slideItem class="slide">
-                <img src="https://assets.codepen.io/16327/portrait-number-05.png" alt="" />
             </div>
         </div>
-    </div>`,
+    `,
     styles: `
         :host {
             width: 100%;
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-
-            //border-top: dashed 2px var(--color-surface50);
-            //border-bottom: dashed 2px var(--color-surface50);
+            overflow: hidden;
         }
 
         .content {
@@ -106,80 +89,65 @@ gsap.registerPlugin(ScrollTrigger);
             max-width: 1300px;
             margin: 0 auto;
             display: flex;
-            padding: 0 10px;
+            padding: 0 2rem;
             position: relative;
+            align-items: center;
+            gap: 4rem;
+
+            .fill-track {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background-color: rgba(255, 255, 255, 0.08);
+
+                .fill {
+                    width: 100%;
+                    height: 100%;
+                    background-color: var(--story-accent);
+                    box-shadow: 0 0 12px var(--story-accent);
+                    transform-origin: top left;
+                    scale: 1 0;
+                }
+            }
 
             .list {
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
-
-                .chapter {
-                    &.selected {
-                        a {
-                            color: var(--color-accent);
-                            text-shadow:
-                                0 0 8px var(--story-glow-level-2),
-                                0 0 28px var(--story-glow-level-1);
-                        }
-
-                        .description {
-                            grid-template-rows: 1fr;
-                            padding: 8px 0;
-                            transition: grid-template-rows 300ms ease;
-                        }
-                    }
-
-                    a {
-                        font-size: 3rem;
-                        color: var(--color-surface-white);
-                        text-decoration: none;
-                        cursor: pointer;
-                        transition: color 0.3s ease;
-                        text-shadow: 0 0 6px var(--story-glow-level-2);
-                    }
-
-                    .description {
-                        display: grid;
-                        grid-template-rows: 0fr;
-                        transition: none;
-                        overflow: hidden;
-                        width: 750px;
-                        font-size: 1.4rem;
-
-                        .description__inner {
-                            min-height: 0;
-                        }
-                    }
-                }
+                gap: 10px;
+                flex: 1;
             }
 
-            .fill {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 2px;
-                height: 100%;
-                background-color: var(--color-accent);
+            .curse {
+                color: var(--story-accent);
+                text-shadow: 0 0 10px var(--story-glow-level-2);
+                font-weight: bold;
             }
 
             .right {
-                flex-grow: 1;
+                flex: 1;
                 position: relative;
+                height: 500px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
                 .slide {
                     position: absolute;
-                    width: 50%;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    right: 1rem;
+                    inset: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     opacity: 0;
                     visibility: hidden;
-                    border-radius: 10px;
 
                     img {
+                        max-width: 340px;
                         width: 100%;
-                        max-width: 300px;
+                        height: auto;
+                        border-radius: 12px;
+                        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
                     }
                 }
             }
@@ -188,7 +156,9 @@ gsap.registerPlugin(ScrollTrigger);
 })
 export class MichaelActs {
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
-    private readonly stepItems = viewChildren<ElementRef<HTMLElement>>('stepItem');
+    private readonly stepItems = viewChildren<Act, ElementRef<HTMLElement>>(Act, {
+        read: ElementRef,
+    });
     private readonly slideItems = viewChildren<ElementRef<HTMLElement>>('slideItem');
     private readonly fill = viewChild.required<ElementRef<HTMLElement>>('fill');
 
@@ -206,23 +176,21 @@ export class MichaelActs {
                 gsap.set(slides[0], { autoAlpha: 1 });
                 steps[0].classList.add('selected');
 
-                gsap.set(this.fill().nativeElement, {
-                    scaleY: 1 / slides.length,
-                    transformOrigin: 'top left',
-                });
-
                 this.tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: this.hostRef.nativeElement,
                         start: 'top top',
                         end: () => '+=' + steps.length * 100 + '%',
                         pin: true,
-                        scrub: true,
+                        scrub: 0.5,
                         onUpdate: (self) => {
-                            const activeIndex = Math.floor(self.progress * steps.length);
-                            const clampedIndex = Math.min(activeIndex, steps.length - 1);
+                            const activeIndex = Math.min(
+                                Math.floor(self.progress * steps.length),
+                                steps.length - 1,
+                            );
+
                             steps.forEach((step, i) => {
-                                step.classList.toggle('selected', i === clampedIndex);
+                                step.classList.toggle('selected', i === activeIndex);
                             });
                         },
                     },
@@ -236,22 +204,19 @@ export class MichaelActs {
                     const prevSlide = slides[i - 1];
 
                     this.tl
-                        .to(prevSlide, { autoAlpha: 0, duration: 0.2 }, i)
-                        .to(slide, { autoAlpha: 1, duration: 0.2 }, '<');
+                        .to(prevSlide, { autoAlpha: 0, duration: 0.4 }, i)
+                        .to(slide, { autoAlpha: 1, duration: 0.4 }, '<');
                 });
 
                 this.tl.to(
                     this.fill().nativeElement,
                     {
                         scaleY: 1,
-                        transformOrigin: 'top left',
                         ease: 'none',
-                        duration: this.tl.duration(),
+                        duration: steps.length - 1,
                     },
                     0,
                 );
-
-                this.tl.to({}, { duration: 0.5 });
             });
         });
 
