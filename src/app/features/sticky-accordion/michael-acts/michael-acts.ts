@@ -1,6 +1,7 @@
 import {
     afterNextRender,
     Component,
+    computed,
     DestroyRef,
     ElementRef,
     inject,
@@ -57,23 +58,12 @@ gsap.registerPlugin(ScrollTrigger);
                 </app-act>
             </nav>
 
-            <div class="right">
-                <div #slideItem class="slide">
-                    <app-dynamic-image src="michael/act-1.webp" alt="Akt 1" [progress]="progress()" />
-                </div>
-                <div #slideItem class="slide">
-                    <app-dynamic-image src="michael/act-2.webp" alt="Akt 2" [progress]="progress()" />
-                </div>
-                <div #slideItem class="slide">
-                    <app-dynamic-image src="michael/act-3.webp" alt="Akt 3" [progress]="progress()" />
-                </div>
-                <div #slideItem class="slide">
-                    <app-dynamic-image src="michael/act-4.webp" alt="Akt 4" [progress]="progress()" />
-                </div>
-                <div #slideItem class="slide">
-                    <app-dynamic-image src="michael/act-5.webp" alt="Akt 5" [progress]="progress()" />
-                </div>
-            </div>
+            <app-dynamic-image
+                class="right"
+                [prevSrc]="previousImageSrc()"
+                [currentSrc]="currentImageSrc()"
+                [progress]="progress()"
+            />
         </div>
     `,
     styles: `
@@ -139,13 +129,6 @@ gsap.registerPlugin(ScrollTrigger);
                 transform: translate(-50%, -50%);
                 z-index: 0;
                 pointer-events: none;
-
-                .slide {
-                    position: absolute;
-                    inset: 0;
-                    opacity: 0;
-                    visibility: hidden;
-                }
             }
         }
     `,
@@ -155,13 +138,15 @@ export class MichaelActs {
     private readonly stepItems = viewChildren<Act, ElementRef<HTMLElement>>(Act, {
         read: ElementRef,
     });
-    private readonly slideItems = viewChildren<ElementRef<HTMLElement>>('slideItem');
     private readonly fill = viewChild.required<ElementRef<HTMLElement>>('fill');
 
     private readonly destroyRef = inject(DestroyRef);
 
+    private readonly previousIndex = signal(0);
     private readonly activeIndex = signal(0);
     protected readonly progress = signal<number>(0);
+    protected readonly currentImageSrc = computed<string>(() => `michael/act-${this.activeIndex() + 1}.webp`);
+    protected readonly previousImageSrc = computed<string>(() => `michael/act-${this.previousIndex() + 1}.webp`);
 
     private ctx!: gsap.Context;
     private st!: ScrollTrigger;
@@ -170,10 +155,7 @@ export class MichaelActs {
         afterNextRender(() => {
             this.ctx = gsap.context(() => {
                 const steps = this.stepItems().map((item) => item.nativeElement);
-                const slides = this.slideItems().map((item) => item.nativeElement);
 
-                gsap.set(slides, { autoAlpha: 0 });
-                gsap.set(slides[0], { autoAlpha: 1 });
                 steps[0].classList.add('selected');
 
                 this.st = ScrollTrigger.create({
@@ -212,22 +194,18 @@ export class MichaelActs {
     }
 
     private updateStep(newIndex: number): void {
-        const slides = this.slideItems().map((item) => item.nativeElement);
         const steps = this.stepItems().map((item) => item.nativeElement);
-        const oldIndex = this.activeIndex();
 
+        this.previousIndex.set(this.activeIndex());
         this.activeIndex.set(newIndex);
 
         steps.forEach((step, i) => step.classList.toggle('selected', i === newIndex));
-
-        gsap.to(slides[oldIndex], { autoAlpha: 0, duration: 0.4, ease: 'power2.inOut' });
-        gsap.to(slides[newIndex], { autoAlpha: 1, duration: 0.4, ease: 'power2.inOut' });
     }
 
     protected goToStep(event: Event, index: number): void {
         event.preventDefault();
 
-        const totalSteps = this.slideItems().length;
+        const totalSteps = this.stepItems().length;
         if (totalSteps <= 1) {
             return;
         }
