@@ -4,6 +4,7 @@ import {
     DestroyRef,
     ElementRef,
     inject,
+    signal,
     viewChild,
     viewChildren,
 } from '@angular/core';
@@ -93,6 +94,7 @@ gsap.registerPlugin(ScrollTrigger);
             position: relative;
             align-items: center;
             gap: 4rem;
+            isolation: isolate;
 
             .fill-track {
                 position: absolute;
@@ -126,10 +128,8 @@ gsap.registerPlugin(ScrollTrigger);
             }
 
             .right {
-                position: absolute;
-                inset: 0;
                 z-index: -1;
-               
+
                 .slide {
                     position: absolute;
                     inset: 0;
@@ -141,6 +141,7 @@ gsap.registerPlugin(ScrollTrigger);
 
                     img {
                         height: 100vh;
+                        opacity: 0.5;
                         mask-image: radial-gradient(ellipse at center, black 0%, transparent 100%);
                     }
                 }
@@ -158,8 +159,9 @@ export class MichaelActs {
 
     private readonly destroyRef = inject(DestroyRef);
 
+    private readonly activeIndex = signal(0);
     private ctx!: gsap.Context;
-    private tl!: gsap.core.Timeline;
+    private st!: ScrollTrigger;
 
     constructor() {
         afterNextRender(() => {
@@ -167,56 +169,55 @@ export class MichaelActs {
                 const steps = this.stepItems().map((item) => item.nativeElement);
                 const slides = this.slideItems().map((item) => item.nativeElement);
 
+                gsap.set(slides, { autoAlpha: 0 });
                 gsap.set(slides[0], { autoAlpha: 1 });
                 steps[0].classList.add('selected');
 
-                this.tl = gsap.timeline({
+                this.st = ScrollTrigger.create({
+                    trigger: this.hostRef.nativeElement,
+                    start: 'top top',
+                    end: () => '+=' + steps.length * 100 + '%',
+                    pin: true,
+                    onUpdate: (self) => {
+                        const newIndex = Math.min(
+                            Math.floor(self.progress * steps.length),
+                            steps.length - 1,
+                        );
+                        if (newIndex !== this.activeIndex()) {
+                            this.updateStep(newIndex);
+                        }
+                    },
+                });
+
+                gsap.to(this.fill().nativeElement, {
+                    scaleY: 1,
+                    ease: 'none',
                     scrollTrigger: {
                         trigger: this.hostRef.nativeElement,
                         start: 'top top',
                         end: () => '+=' + steps.length * 100 + '%',
-                        pin: true,
-                        scrub: 0.5,
-                        onUpdate: (self) => {
-                            const activeIndex = Math.min(
-                                Math.floor(self.progress * steps.length),
-                                steps.length - 1,
-                            );
-
-                            steps.forEach((step, i) => {
-                                step.classList.toggle('selected', i === activeIndex);
-                            });
-                        },
+                        scrub: true,
                     },
                 });
-
-                slides.forEach((slide, i) => {
-                    if (i === 0) {
-                        return;
-                    }
-
-                    const prevSlide = slides[i - 1];
-
-                    this.tl
-                        .to(prevSlide, { autoAlpha: 0, duration: 0.4 }, i)
-                        .to(slide, { autoAlpha: 1, duration: 0.4 }, '<');
-                });
-
-                this.tl.to(
-                    this.fill().nativeElement,
-                    {
-                        scaleY: 1,
-                        ease: 'none',
-                        duration: steps.length - 1,
-                    },
-                    0,
-                );
             });
         });
 
         this.destroyRef.onDestroy(() => {
             this.ctx.revert();
         });
+    }
+
+    private updateStep(newIndex: number): void {
+        const slides = this.slideItems().map((item) => item.nativeElement);
+        const steps = this.stepItems().map((item) => item.nativeElement);
+        const oldIndex = this.activeIndex();
+
+        this.activeIndex.set(newIndex);
+
+        steps.forEach((step, i) => step.classList.toggle('selected', i === newIndex));
+
+        gsap.to(slides[oldIndex], { autoAlpha: 0, duration: 0.4, ease: 'power2.inOut' });
+        gsap.to(slides[newIndex], { autoAlpha: 1, duration: 0.4, ease: 'power2.inOut' });
     }
 
     protected goToStep(event: Event, index: number): void {
@@ -228,15 +229,13 @@ export class MichaelActs {
         }
 
         const progress = index / (totalSteps - 1);
-        const st = this.tl.scrollTrigger;
+        const st = this.st;
 
-        if (st) {
-            const targetY = st.start + (st.end - st.start) * progress;
+        const targetY = st.start + (st.end - st.start) * progress;
 
-            window.scrollTo({
-                top: targetY,
-                behavior: 'smooth',
-            });
-        }
+        window.scrollTo({
+            top: targetY,
+            behavior: 'smooth',
+        });
     }
 }
