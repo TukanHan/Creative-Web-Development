@@ -11,12 +11,13 @@ import {
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Act } from './act';
+import { DynamicImage } from './dynamic-image/dynamic-image';
 
 gsap.registerPlugin(ScrollTrigger);
 
 @Component({
     selector: 'app-michael-acts',
-    imports: [Act],
+    imports: [Act, DynamicImage],
     template: `
         <div class="content">
             <div class="fill-track">
@@ -58,19 +59,19 @@ gsap.registerPlugin(ScrollTrigger);
 
             <div class="right">
                 <div #slideItem class="slide">
-                    <img src="michael/act-1.webp" alt="Akt 1" />
+                    <app-dynamic-image src="michael/act-1.webp" alt="Akt 1" [progress]="progress()" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="michael/act-2.webp" alt="Akt 2" />
+                    <app-dynamic-image src="michael/act-2.webp" alt="Akt 2" [progress]="progress()" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="michael/act-3.webp" alt="Akt 3" />
+                    <app-dynamic-image src="michael/act-3.webp" alt="Akt 3" [progress]="progress()" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="michael/act-4.webp" alt="Akt 4" />
+                    <app-dynamic-image src="michael/act-4.webp" alt="Akt 4" [progress]="progress()" />
                 </div>
                 <div #slideItem class="slide">
-                    <img src="michael/act-5.webp" alt="Akt 5" />
+                    <app-dynamic-image src="michael/act-5.webp" alt="Akt 5" [progress]="progress()" />
                 </div>
             </div>
         </div>
@@ -94,7 +95,6 @@ gsap.registerPlugin(ScrollTrigger);
             position: relative;
             align-items: center;
             gap: 4rem;
-            isolation: isolate;
 
             .fill-track {
                 position: absolute;
@@ -102,6 +102,7 @@ gsap.registerPlugin(ScrollTrigger);
                 top: 0;
                 bottom: 0;
                 width: 2px;
+                z-index: 1;
                 background-color: rgba(255, 255, 255, 0.08);
 
                 .fill {
@@ -119,6 +120,8 @@ gsap.registerPlugin(ScrollTrigger);
                 flex-direction: column;
                 gap: 10px;
                 flex: 1;
+                position: relative;
+                z-index: 1;
             }
 
             .curse {
@@ -128,22 +131,20 @@ gsap.registerPlugin(ScrollTrigger);
             }
 
             .right {
-                z-index: -1;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%);
+                z-index: 0;
+                pointer-events: none;
 
                 .slide {
                     position: absolute;
                     inset: 0;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
                     opacity: 0;
                     visibility: hidden;
-
-                    img {
-                        height: 100vh;
-                        opacity: 0.5;
-                        mask-image: radial-gradient(ellipse at center, black 0%, transparent 100%);
-                    }
                 }
             }
         }
@@ -160,6 +161,8 @@ export class MichaelActs {
     private readonly destroyRef = inject(DestroyRef);
 
     private readonly activeIndex = signal(0);
+    protected readonly progress = signal<number>(0);
+
     private ctx!: gsap.Context;
     private st!: ScrollTrigger;
 
@@ -179,6 +182,7 @@ export class MichaelActs {
                     end: () => '+=' + steps.length * 100 + '%',
                     pin: true,
                     onUpdate: (self) => {
+                        this.progress.set(self.progress);
                         const newIndex = Math.min(
                             Math.floor(self.progress * steps.length),
                             steps.length - 1,
