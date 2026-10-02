@@ -141,7 +141,6 @@ gsap.registerPlugin(ScrollTrigger);
 
                     img {
                         height: 100vh;
-                        filter: saturate(0.5) opacity(0.7);
                         mask-image: radial-gradient(ellipse at center, black 0%, transparent 100%);
                     }
                 }
