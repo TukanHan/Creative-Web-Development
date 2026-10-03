@@ -152,13 +152,13 @@ gsap.registerPlugin(ScrollTrigger);
 export class MichaelIntro {
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     private readonly onDestroy = inject(DestroyRef);
-    private ctx?: gsap.Context;
 
     protected readonly step = signal<'title' | 'subtitle' | 'quote'>('title');
 
     constructor() {
-        afterNextRender(() => (this.ctx = this.initAnimation()));
-        this.onDestroy.onDestroy(() => this.ctx?.revert());
+        let ctx: gsap.Context | undefined;
+        afterNextRender(() => (ctx = this.initAnimation()));
+        this.onDestroy.onDestroy(() => ctx?.revert());
     }
 
     private initAnimation(): gsap.Context {

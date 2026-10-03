@@ -1,11 +1,4 @@
-import {
-    afterNextRender,
-    Component,
-    DestroyRef,
-    ElementRef,
-    inject,
-    signal,
-} from '@angular/core';
+import { afterNextRender, Component, DestroyRef, ElementRef, inject, signal } from '@angular/core';
 import { MichaelIntro } from './michael-intro';
 import { MichaelEpilogue } from './michael-epilogue';
 import { MichaelActs } from './michael-acts/michael-acts';
@@ -49,13 +42,13 @@ gsap.registerPlugin(ScrollTrigger);
 export class StickyAccordion {
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     private readonly destroyRef = inject(DestroyRef);
-    private ctx?: globalThis.ScrollTrigger;
 
     protected readonly progress = signal<number>(0);
 
     constructor() {
-        afterNextRender(() => (this.ctx = this.initAnimation()));
-        this.destroyRef.onDestroy(() => this.ctx?.kill());
+        let ctx: globalThis.ScrollTrigger | undefined;
+        afterNextRender(() => (ctx = this.initAnimation()));
+        this.destroyRef.onDestroy(() => ctx?.kill());
     }
 
     private initAnimation(): globalThis.ScrollTrigger {

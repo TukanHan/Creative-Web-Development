@@ -4,6 +4,7 @@ precision highp float;
 uniform sampler2D uTexture;
 uniform float uTime;
 uniform float uProgress;
+uniform vec2 uResolution;
 
 in vec2 vUv;
 out vec4 FragColor;
@@ -77,6 +78,7 @@ float fbm(vec3 st) {
 void main() {
     vec2 uv = vUv;
     vec4 texColor = texture(uTexture, uv);
+    vec2 noiseUv = (uv - vec2(0.5)) * vec2(uResolution.x / uResolution.y, 1.0);
 
     // =========================================================
     // 1. KRAWĘDŹ GÓRA/DÓŁ (Wielo-oktawowy FBM)
@@ -89,10 +91,15 @@ void main() {
     float edgeFactor = max(distY * 1.2, distX * 0.3);
 
     float edgeActivity = smoothstep(0.0, 1.0, clamp(uProgress, 0.0, 1.0));
+    float distFromCenter = length(noiseUv);
+    float radialStrength = pow(smoothstep(0.0, 0.707, distFromCenter), 1.2);
+    float edgeAlphaMultiplier = mix(0.65, 1.5, radialStrength);
+    edgeFactor *= mix(1.0, edgeAlphaMultiplier, edgeActivity);
+
     float edgeRoughness = edgeActivity * edgeActivity;
-    vec3 fogPosition = vec3(uv * 3.0, uTime * 0.08);
+    vec3 fogPosition = vec3(noiseUv * 2.4, uTime * 0.07);
     float fogNoise = fbm(fogPosition) * mix(0.25, 0.42, edgeRoughness);
-    float fineNoise = snoise(vec3(uv * 18.0, uTime * 0.12));
+    float fineNoise = snoise(vec3(noiseUv * 12.0, uTime * 0.07));
     float edgeDetail = fineNoise * 0.18 * edgeRoughness;
 
     // Bardzo miękkie przejście krawędziowe (bardzo duży rozstęp wartości w smoothstep)
@@ -103,28 +110,22 @@ void main() {
     // 2. ŚRODEK (Nasiąkanie/Mroczenie zasilane uProgress)
     // =========================================================
     // Osobny, subtelny FBM dla środka obrazu
-    vec3 centerPosition = vec3(uv * 2.0, uTime * 0.04);
+    vec3 centerPosition = vec3(noiseUv * 3.0, uTime * 0.05);
     float centerNoise = fbm(centerPosition);
 
-    // Dystans od środka kadru
-    float distFromCenter = length(uv - vec2(0.5));
-
-    // Płynny wpływ uProgress – bez tworzenia "ostrych dziur"
+    // Większe plamy z łagodnym wpływem progressu i dystansu
     float stain = smoothstep(-0.6, 0.8, centerNoise + (uProgress * 0.4) - (distFromCenter * 0.5));
     
-    // Umiarkowane osłabienie alfy w miejscach plam (maksymalnie do ~0.7)
+    // Łagodne osłabienie alfy w miejscach plam
     float centerAlpha = mix(1.0, 0.72, stain * uProgress);
 
-    // Subtelne, naturalne przyciemnienie w plamach
+    // Subtelne przyciemnienie towarzyszące pulsowaniu
     vec3 finalRgb = mix(texColor.rgb, texColor.rgb * 0.85, stain * uProgress * 0.4);
 
     // =========================================================
     // 3. POŁĄCZENIE I KLAMP
     // =========================================================
     float finalAlpha = edgeAlpha * centerAlpha;
-
-    // Brak całkowitego wygaszania
-    finalAlpha = clamp(finalAlpha, 0.15, 1.0);
 
     FragColor = vec4(finalRgb, texColor.a * finalAlpha);
 }

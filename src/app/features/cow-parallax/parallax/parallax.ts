@@ -34,25 +34,19 @@ gsap.registerPlugin(ScrollTrigger);
     styleUrl: './parallax.css',
 })
 export class Parallax {
-    private ctx?: gsap.Context;
-
     private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly layerElements = viewChildren<ElementRef<HTMLImageElement>>('layerEl');
 
     private readonly destroyRef = inject(DestroyRef);
 
     constructor() {
-        afterNextRender(() => {
-            this.initParallaxAnimation();
-        });
-
-        this.destroyRef.onDestroy(() => {
-            this.ctx?.revert();
-        });
+        let ctx: gsap.Context | undefined;
+        afterNextRender(() => (ctx = this.initParallaxAnimation()));
+        this.destroyRef.onDestroy(() => ctx?.revert());
     }
 
-    private initParallaxAnimation(): void {
-        this.ctx = gsap.context(() => {
+    private initParallaxAnimation(): gsap.Context {
+        return gsap.context(() => {
             const h = this.hostRef.nativeElement.offsetHeight;
 
             this.layerElements().forEach((layerRef) => {

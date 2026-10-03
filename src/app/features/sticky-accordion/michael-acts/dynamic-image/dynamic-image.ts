@@ -1,12 +1,4 @@
-import {
-    Component,
-    effect,
-    ElementRef,
-    input,
-    OnDestroy,
-    OnInit,
-    viewChild,
-} from '@angular/core';
+import { Component, effect, ElementRef, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { Geometry, Mesh, Program, Renderer, Texture } from 'ogl';
 
 import vertexShader from '../../../../core/shaders/shape.vert.glsl';
@@ -42,6 +34,7 @@ export class DynamicImage implements OnInit, OnDestroy {
         uTexture: { value: null as Texture | null },
         uTime: { value: 0 },
         uProgress: { value: 0 },
+        uResolution: { value: new Float32Array(2) },
     };
     private animationFrameId!: number;
     private previousFrameTime?: number;
@@ -92,7 +85,7 @@ export class DynamicImage implements OnInit, OnDestroy {
         this.currentProgress += (this.progress() - this.currentProgress) * 0.05;
         this.transitionPass.render(time);
         this.storyUniforms.uTexture.value = this.transitionPass.texture;
-        this.storyUniforms.uTime.value += deltaTime;
+        this.storyUniforms.uTime.value += deltaTime * (1 + this.currentProgress * 3);
         this.storyUniforms.uProgress.value = this.currentProgress;
         this.renderer.render({ scene: this.storyEffect });
         this.animationFrameId = requestAnimationFrame(this.animate);
@@ -107,6 +100,8 @@ export class DynamicImage implements OnInit, OnDestroy {
 
         const gl = this.renderer.gl;
         this.transitionPass.resize(gl.canvas.width, gl.canvas.height);
+        this.storyUniforms.uResolution.value[0] = width;
+        this.storyUniforms.uResolution.value[1] = height;
     }
 
     public ngOnDestroy(): void {

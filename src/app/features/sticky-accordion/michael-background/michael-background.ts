@@ -1,4 +1,12 @@
-import { Component, ElementRef, input, OnDestroy, OnInit, viewChild } from '@angular/core';
+import {
+    afterNextRender,
+    Component,
+    DestroyRef,
+    ElementRef,
+    inject,
+    input,
+    viewChild,
+} from '@angular/core';
 import { Geometry, Mesh, Program, Renderer } from 'ogl';
 
 import vertexShader from '../../../core/shaders/shape.vert.glsl';
@@ -23,13 +31,16 @@ import fragmentShader from './smoke.frag.glsl';
         '(window:resize)': 'resize()',
     },
 })
-export class MichaelBackground implements OnInit, OnDestroy {
+export class MichaelBackground {
     public readonly progress = input.required<number>();
+    private readonly destroyRef = inject(DestroyRef);
+
     private currentProgress = 0;
 
     protected readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
     private renderer!: Renderer;
+    private geometry!: Geometry;
     private program!: Program;
     private mesh!: Mesh;
     private animationFrameId!: number;
@@ -39,10 +50,14 @@ export class MichaelBackground implements OnInit, OnDestroy {
     private readonly resolutionUniform = { value: new Float32Array(2) };
     private readonly progressUniform = { value: 0 };
 
-    public ngOnInit(): void {
-        this.initRenderer();
-        this.resize();
-        this.animationFrameId = requestAnimationFrame(this.animate);
+    constructor() {
+        afterNextRender(() => {
+            this.initRenderer();
+            this.resize();
+            this.animationFrameId = requestAnimationFrame(this.animate);
+        });
+
+        this.destroyRef.onDestroy(() => this.dispose());
     }
 
     private initRenderer(): void {
@@ -55,7 +70,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
         });
         const gl = this.renderer.gl;
 
-        const geometry = new Geometry(gl, {
+        this.geometry = new Geometry(gl, {
             position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
             uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
         });
@@ -71,7 +86,7 @@ export class MichaelBackground implements OnInit, OnDestroy {
             transparent: true,
         });
 
-        this.mesh = new Mesh(gl, { geometry, program: this.program });
+        this.mesh = new Mesh(gl, { geometry: this.geometry, program: this.program });
     }
 
     private readonly animate = (time: number): void => {
@@ -99,7 +114,9 @@ export class MichaelBackground implements OnInit, OnDestroy {
         this.resolutionUniform.value[1] = gl.canvas.height;
     }
 
-    public ngOnDestroy(): void {
+    private dispose(): void {
         cancelAnimationFrame(this.animationFrameId);
+        this.geometry.remove();
+        this.program.remove();
     }
 }
